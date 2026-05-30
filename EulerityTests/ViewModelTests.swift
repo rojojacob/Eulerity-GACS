@@ -191,3 +191,41 @@ struct ViewModelSubmitTests {
         #expect(vm.confirmation == nil)
     }
 }
+
+@Suite("FormViewModel regex")
+@MainActor
+struct ViewModelRegexTests {
+
+    private func viewModel(_ json: String) throws -> FormViewModel {
+        FormViewModel(payload: try JSONDecoder().decode(FormPayload.self, from: Data(json.utf8)))
+    }
+
+    private let regexField = #"{"fields":[{"id":"code","type":"TEXT","label":"C","regex":"^[A-Z0-9]{4,10}$"}]}"#
+
+    @Test("A regex-failing value blocks submit with an inline error")
+    func regexErrorSurfacesOnSubmit() throws {
+        let vm = try viewModel(regexField)
+        vm.updateText("code", to: "lower")
+        vm.validateAndSubmit()
+        #expect(vm.errors["code"] != nil)
+        #expect(vm.confirmation == nil)
+    }
+
+    @Test("A matching value submits cleanly through the precompiled regex")
+    func regexValidSubmits() throws {
+        let vm = try viewModel(regexField)
+        vm.updateText("code", to: "SAVE20")
+        vm.validateAndSubmit()
+        #expect(vm.errors.isEmpty)
+        #expect(vm.confirmation != nil)
+    }
+
+    @Test("An invalid regex pattern is ignored end-to-end, never blocks submit (§7 #11)")
+    func invalidPatternIgnored() throws {
+        let vm = try viewModel(#"{"fields":[{"id":"code","type":"TEXT","label":"C","regex":"[unclosed"}]}"#)
+        vm.updateText("code", to: "anything")
+        vm.validateAndSubmit()
+        #expect(vm.errors.isEmpty)
+        #expect(vm.confirmation != nil)
+    }
+}

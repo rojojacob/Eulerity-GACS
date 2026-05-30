@@ -31,6 +31,10 @@ final class FormViewModel: ObservableObject {
     /// during updates — never a linear scan of `orderedFields` (Constitution IV).
     private let fieldsByID: [String: FormField]
 
+    /// fieldId → compiled regex, built once so validation never recompiles a pattern
+    /// on each Save (Plan.md F2). Invalid patterns are omitted (treated as no rule, §7 #11).
+    private let compiledRegexes: [String: NSRegularExpression]
+
     /// The result of a successful submit: the typed payload and its pretty JSON.
     struct Confirmation: Equatable {
         let payload: [String: SubmitValue]
@@ -43,6 +47,7 @@ final class FormViewModel: ObservableObject {
         let ordered = Self.sorted(payload.fields)
         orderedFields = ordered
         fieldsByID = Dictionary(ordered.map { ($0.id, $0) }, uniquingKeysWith: { first, _ in first })
+        compiledRegexes = Self.compileRegexes(ordered)
         values = Self.seedValues(for: ordered)
     }
 
@@ -90,7 +95,7 @@ final class FormViewModel: ObservableObject {
     /// ``confirmation``. On failure, populates ``errors`` and submits nothing
     /// (Plan.md D2).
     func validateAndSubmit() {
-        errors = Validator.validate(fields: orderedFields, values: values)
+        errors = Validator.validate(fields: orderedFields, values: values, regexes: compiledRegexes)
         guard errors.isEmpty else {
             confirmation = nil
             return
@@ -203,5 +208,17 @@ final class FormViewModel: ObservableObject {
             // but the switch must be total.
             return .text("")
         }
+    }
+
+    /// Compiles each field's `regex` once; invalid patterns are dropped (treated as
+    /// no rule). - Complexity: O(n) over fields; each compile is O(pattern length).
+    private static func compileRegexes(_ fields: [FormField]) -> [String: NSRegularExpression] {
+        var result: [String: NSRegularExpression] = [:]
+        for field in fields {
+            guard let pattern = field.regex,
+                  let regex = try? NSRegularExpression(pattern: pattern) else { continue }
+            result[field.id] = regex
+        }
+        return result
     }
 }

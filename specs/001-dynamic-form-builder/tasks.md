@@ -108,8 +108,11 @@ task before the previous task's G5 is green.
   malformed URL left as plain text (§7 #10). **Tests**: `RichTextTests` (4) — link ranges, missing
   ignored, malformed URL, nil metadata. **✅ Verified on simulator** (Terms/Privacy render blue &
   linked). 64 tests / 15 suites green.
-- [ ] **F2** `feat: regex validation UX` — surface D1 regex errors inline; compile once; bad pattern ignored.
-  **Tests**: extends `ValidationTests` (D1). Depends on D1, E2.
+- [x] **F2** `feat: regex validation UX` — regex errors already surface inline (D1 `Validator` +
+  `FieldRowView`); F2 adds **compile-once caching**: `FormViewModel` precompiles each pattern at init
+  and passes it to `Validator` (which falls back to inline compile, so D1 tests stand). Invalid
+  pattern ignored end-to-end (§7 #11). **Tests**: `ViewModelRegexTests` (3) — fail blocks submit,
+  match submits, invalid pattern ignored. **✅ Done & verified** (67 tests / 16 suites green).
 - [ ] **F3** `feat: keyboard Next/Done toolbar` — `@FocusState` over ordered text-field ids; Next advances, Done dismisses.
   **Tests**: `FocusTests.test_focusOrderMatchesVisualOrder()`. Depends on E2.
 - [ ] **F4** `test: polymorphic parsing edge cases` — consolidate/extend decoding tests to cover the
