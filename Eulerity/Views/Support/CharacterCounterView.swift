@@ -6,7 +6,9 @@
 import SwiftUI
 
 /// A live `count / max` indicator shown beneath a text field that declares a
-/// `max_length`. Turns the theme's error color once the limit is reached.
+/// `max_length`. Reaching the limit is a valid state (input is capped, never
+/// exceeded), so the counter stays neutral — it is not an error and isn't colored
+/// red at `count == max`.
 struct CharacterCounterView: View {
     let count: Int
     let max: Int
@@ -15,7 +17,7 @@ struct CharacterCounterView: View {
     var body: some View {
         Text("\(count)/\(max)")
             .font(.caption2.monospacedDigit())
-            .foregroundStyle(count >= max ? theme.error : theme.text.opacity(0.5))
+            .foregroundStyle(theme.text.opacity(0.5))
             .frame(maxWidth: .infinity, alignment: .trailing)
     }
 }
