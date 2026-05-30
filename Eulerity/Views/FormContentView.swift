@@ -6,8 +6,12 @@
 import SwiftUI
 
 /// The themed form itself, shown once a payload has loaded. Owns the
-/// ``FormViewModel`` and paints the JSON-defined ``ResolvedTheme``: a scrollable
-/// title + ordered fields + Save button, plus the confirmation alert on submit.
+/// ``FormViewModel`` and paints the JSON-defined ``ResolvedTheme``.
+///
+/// The title lives in a `NavigationStack`'s inline navigation bar (not in the
+/// scroll content) so the system insets it below the status bar / Dynamic Island
+/// and gives it a themed, opaque background as content scrolls underneath. The
+/// title is rendered as a `principal` toolbar item so its color follows the theme.
 struct FormContentView: View {
     @StateObject private var viewModel: FormViewModel
     @FocusState private var focusedField: String?
@@ -19,44 +23,52 @@ struct FormContentView: View {
     }
 
     var body: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 20) {
-                Text(viewModel.formTitle)
-                    .font(.largeTitle.bold())
-                    .foregroundStyle(theme.text)
+        NavigationStack {
+            ScrollView {
+                VStack(alignment: .leading, spacing: 20) {
+                    ForEach(viewModel.orderedFields) { field in
+                        FieldRowView(field: field, viewModel: viewModel, theme: theme,
+                                     focusedField: $focusedField)
+                    }
 
-                ForEach(viewModel.orderedFields) { field in
-                    FieldRowView(field: field, viewModel: viewModel, theme: theme,
-                                 focusedField: $focusedField)
+                    Button(action: viewModel.validateAndSubmit) {
+                        Text("Save").frame(maxWidth: .infinity)
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .tint(theme.border)
+                    .padding(.top, 8)
                 }
-
-                Button(action: viewModel.validateAndSubmit) {
-                    Text("Save").frame(maxWidth: .infinity)
+                .padding()
+                .frame(maxWidth: .infinity, alignment: .leading)
+            }
+            .background(theme.background.ignoresSafeArea())
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbarBackground(theme.background, for: .navigationBar)
+            .toolbarBackground(.visible, for: .navigationBar)
+            .toolbar {
+                ToolbarItem(placement: .principal) {
+                    Text(viewModel.formTitle)
+                        .font(.headline)
+                        .foregroundStyle(theme.text)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.7)
                 }
-                .buttonStyle(.borderedProminent)
-                .tint(theme.border)
-                .padding(.top, 8)
+                ToolbarItemGroup(placement: .keyboard) {
+                    Button("Next", action: focusNext)
+                        .disabled(isLastTextField)
+                    Spacer()
+                    Button("Done") { focusedField = nil }
+                }
             }
-            .padding()
-            .frame(maxWidth: .infinity, alignment: .leading)
-        }
-        .background(theme.background.ignoresSafeArea())
-        .toolbar {
-            ToolbarItemGroup(placement: .keyboard) {
-                Button("Next", action: focusNext)
-                    .disabled(isLastTextField)
-                Spacer()
-                Button("Done") { focusedField = nil }
+            .alert(
+                "Form submitted",
+                isPresented: confirmationBinding,
+                presenting: viewModel.confirmation
+            ) { _ in
+                Button("OK", role: .cancel) {}
+            } message: { confirmation in
+                Text(confirmation.json)
             }
-        }
-        .alert(
-            "Form submitted",
-            isPresented: confirmationBinding,
-            presenting: viewModel.confirmation
-        ) { _ in
-            Button("OK", role: .cancel) {}
-        } message: { confirmation in
-            Text(confirmation.json)
         }
     }
 
