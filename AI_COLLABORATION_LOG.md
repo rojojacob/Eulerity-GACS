@@ -218,10 +218,10 @@ A few non-obvious things I can speak to directly:
 
 ## Status & next steps
 
-- **Done & verified**: A1 (scaffold), A2 (theme/hex), B1 (type taxonomy), B2 (polymorphic
-  skip-unknown decoding), B3 (bundle loader with typed errors) — all green through the 5-gate loop
-  (**35 tests / 9 suites**). Phase B (parsing core) complete.
-- **Next**: C1 (field-value state + seeded defaults) → C2 (updates / max-length) → the rest of
+- **Done & verified**: A1–A2, B1–B3 (parsing core), and C1 (the first `@MainActor` view model:
+  `FieldValue` + `FormViewModel` ordering and seeded defaults) — all green through the 5-gate loop
+  (**41 tests / 11 suites**).
+- **Next**: C2 (value-update intents + live max-length guard) → D1 (validation) → the rest of
   `Plan.md §6`.
 - I will keep appending to this log as the build progresses, capturing prompts, accepted
   suggestions, push-backs, and any bugs the AI gets wrong.

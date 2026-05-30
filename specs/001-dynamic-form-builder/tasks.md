@@ -52,11 +52,13 @@ task before the previous task's G5 is green.
 
 ## Phase C — State & ViewModel
 
-- [ ] **C1** `feat: field value state + defaults` — `FieldValue` enum; `FormViewModel.orderedFields`
-  (sorted by `order`, stable tie-break) + `values` seeded from defaults (text truncated to
-  `max_length`; selection filtered to valid option ids).
-  **Tests**: `OrderingTests.test_fieldsSortedByOrderNotIndex()`; `ViewModelTests.test_defaultsSeeded()`,
-  `test_defaultSelectionFilteredToValidOptions()`, `test_textDefaultTruncatedToMaxLength()`. Depends on B2.
+- [x] **C1** `feat: field value state + defaults` — `FieldValue` enum (`.text`/`.bool`/`.selection`);
+  `FormViewModel` (`@MainActor ObservableObject`, no SwiftUI) builds `orderedFields` (sort by `order`
+  with explicit stable tie-break on decode index) + `@Published values` seeded from defaults (text
+  truncated to `max_length` #1; dropdown selection filtered to valid option ids via a `Set` #9).
+  Removed the unused `LoadableViewModel` (YAGNI).
+  **Tests**: `OrderingTests` (sort-not-index, stable tie-break); `ViewModelTests` (defaults seeded,
+  absent → empty/false, selection filtered, text truncated). **✅ Done & verified** (41 tests / 11 suites green).
 - [ ] **C2** `feat: value updates + max length guard` — `updateText`/`toggle`/`select`
   (single replace vs multi membership), O(1) dictionary writes, prefix truncation.
   **Tests**: `ViewModelTests.test_maxLengthBlocksOverflow()`, `test_singleSelectReplaces()`,
