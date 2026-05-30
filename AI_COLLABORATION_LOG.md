@@ -239,3 +239,139 @@ A few non-obvious things I can speak to directly:
 - **Next**: Phase G — README, finalize this log, and the 30–60s demo video; then Definition of Done.
 - I will keep appending to this log as the build progresses, capturing prompts, accepted
   suggestions, push-backs, and any bugs the AI gets wrong.
+
+---
+
+# BugFixes
+
+After the app was feature-complete I ran several rounds of polish and bug-fixing, all on a
+`feature/bug-fix-improvements` branch. For this whole phase I had the AI drive **XcodeBuildMCP**
+(the `xcodebuildmcp` CLI) instead of raw `xcodebuild`, so I could build, run on a booted
+simulator, **drive the UI (taps, typing), and capture screenshots** to verify each fix visually
+— not just by tests. Every fix below was confirmed on-device and against the full suite.
+
+## Round 1 — Real payload swap, and stale test fixtures
+
+**My prompt:** *"There was some data missing and the JSON was not proper in
+`form_payload.json`. Now I have updated the JSON manually. Use XcodeBuildMCP and the test cases
+to test each case, each field, and if any error is thrown, fix the issues and make the app work
+as expected."*
+
+I replaced my placeholder sample with a comprehensive **9-field** payload (multi-dropdown,
+NUMBER/SECURE/URI text subtypes, an empty-options billing dropdown, a `COLOR_PICKER` unknown
+type, checkbox links, and a campaign-name default longer than its `max_length`).
+
+**The AI predicted the failure before running, then proved it.** It noted that two tests had
+hard-coded the *old* sample's count and would now break (the new payload has **8 renderable + 1
+skipped**, not 6). It ran the suite via the CLI: exactly **2 failures**, both
+`payload.fields.count → 8 == 6`. No decode errors, no crashes — the app handled the new payload
+correctly; the "errors thrown" were stale fixtures, not app bugs.
+
+I had it (a) fix the two counts, (b) *upgrade* the bundled-decode test to assert each field's
+decoded shape (subtypes, options, `max_length`, metadata), and (c) add a `BundledPayloadTests`
+suite that drives the **real** payload through the view model — ordering, the over-long default
+truncated to 20, the toggle seeded on, and required-field validation. Then it ran the app and
+took screenshots, and I tapped **Save** to watch every required field flag its own error message
+(including the empty-options billing conflict). Result: **78 tests pass**, app verified working.
+
+**A correctness call I flagged back to myself:** my new payload marks `billing_account`
+`required` with empty `options`, so by the resilience rule it can *never* be satisfied — the app
+correctly blocks submit. The AI surfaced this as "not a bug, but you can't submit this form as
+configured." I came back to it in Round 4.
+
+## Round 2 — Title colliding with the Dynamic Island
+
+**My prompt (with a screenshot):** *"On scrolling to the top, the Dynamic Island and the safe
+area are interrupting the content. Fix the UI break at the top — add a navigation bar or
+somehow fix it."*
+
+The large title was scroll content with no nav bar, so its top line ran under the status bar.
+The AI wrapped the screen in a `NavigationStack`. **Debug #6:** the first attempt used a *large*
+navigation title and it rendered **invisible** — a dark title on the dark themed bar, because
+the system large-title color doesn't follow `.toolbarColorScheme`. The screenshot caught the
+empty band immediately. The fix was a compact **inline** bar with the title as a `principal`
+toolbar item colored explicitly from the theme (`theme.text`), over a themed `toolbarBackground`.
+Re-ran, screenshotted: title sits below the Dynamic Island, legible, no overlap. 78 tests green.
+Lesson reinforced: for SwiftUI nav-bar text color, control it explicitly rather than hoping a
+modifier wins.
+
+## Round 3 — Hard-capping `max_length`, and a SwiftUI binding gotcha
+
+**My prompt:** *"For `campaign_name` (max 20): if a char is above 20, trim and keep only 20; at
+20/20 don't show red; and it should not exceed 20 even if the user types — let the char not
+append."*
+
+This is the best debugging moment of the bug-fix phase. The counter color was a one-liner
+(reaching the cap is valid, so I made the counter neutral, never red). But when the AI typed 16
+extra characters into the full field on the simulator, the screenshot showed the bug clearly:
+**the counter said `20/20` while the field visibly displayed more than 20 characters.**
+
+The *value* was correctly capped (the counter, which reads the model, proved it) but the
+**displayed text wasn't reverting.** This is a classic SwiftUI trap: when the truncated value
+equals the previous value, a plain view-model binding doesn't push the capped text back to the
+field, so the keystroke lingers on screen. The robust fix was to bind the field to **local
+`@State`** and, on an over-limit edit, rewrite that state to the capped value — which *forces*
+the field to drop the extra character — while keeping the view model in sync for
+validation/submit. Re-ran on-device: typing 16 extra chars now changes nothing, counter neutral
+at `20/20`. I would not have trusted this fix from the value alone — only the on-device
+screenshot exposed the display/value divergence.
+
+## Round 4 — A batch of 8 UI/UX fixes + a local billing flow
+
+**My prompt:** *"There are some bugs to fix, fix them all: (1) remove the Next/Done keyboard
+buttons; (2) if a text field has no placeholder, use the label as placeholder; (3) make the
+placeholder color consistent/standard; (4) when Ad Networks is clicked the whole field disappears
+with the popup; (5) when all fields are entered, turn the Save button `#BB86FC` to indicate it's
+clickable; (6) make the checkbox color `#BB86FC` (it's gray, can't tell if checked); (7) if no
+billing account, add a local flow — tapping the field opens a bottom sheet with full name / card
+number / exp / CVV + an Add button, list added cards, and save them locally; (8) toggle color
+`#BB86FC` when on. Fix all, then test with the XcodeBuild CLI."*
+
+I had the AI work through all eight. Highlights of where judgment mattered:
+
+- **Items 5/6/8 (the `#BB86FC` accent):** I centralized it as a `ResolvedTheme.accent` brand
+  color rather than hard-coding it in three places, and wired Save/checkbox/toggle to it. Item 5
+  needed a reactive `isFormValid` on the view model to drive the Save tint.
+- **Item 4 (dropdown disappearing):** I could **not reproduce it** on my iPhone 16 Pro simulator
+  — tapping the dropdown showed the options and selecting worked. The report was on an iPhone 17
+  Pro / iOS 26, which I don't have. Rather than ship a `Menu` I couldn't verify on that device, I
+  had the AI **replace the `Menu` with a sheet-based selector** — robust across iOS versions and
+  with *better* multi-select UX (checkmarks, stays open, Done). That removes the entire class of
+  `Menu`/Liquid-Glass popover bug. (Push-back on myself: don't "fix" by guessing — change the
+  mechanism that could plausibly be at fault.)
+- **Item 7 (local billing):** the biggest piece — a `BillingCard` model, a `CardStore` persisting
+  to `UserDefaults`, and a bottom-sheet component. I made the AI add an explicit **security
+  caveat in the code**: storing the full PAN and CVV in `UserDefaults` is *not* secure and is only
+  to satisfy "save locally" — a real app would tokenize. I verified the whole flow on-device:
+  filled the card form, tapped Add, the card listed as `•••• 4242` with a checkmark, and the
+  field showed the masked card. The validator was updated so a selected card satisfies the
+  previously-unsatisfiable billing field — which also resolves the Round-1 caveat.
+
+**Debug #7 — a compile error from a Text vs. View type.** Coloring the placeholder failed to
+build: `Text(...).foregroundStyle(...)` returns `some View`, but `TextField`'s `prompt:` wants a
+`Text`. The Text-specific `.foregroundColor` returns `Text`; swapping it fixed the build.
+
+**Debug #8 — flaky UI automation, so I switched to a unit test.** To prove item 5 visually I
+needed every field filled, but coordinate-based typing on a scrolling, keyboard-occluded form
+kept landing text in the wrong field (the tap's focus change is async; `type` fired before it
+settled). Instead of fighting it, I had the AI verify item 5 **deterministically** with a unit
+test — `isFormValid` is `false` with empty required fields and flips `true` once they're all
+satisfied. That's a cleaner proof than a fragile screenshot, and it's now a regression guard.
+
+Result: **79 tests pass** via the CLI, and I confirmed items 1–4, 6–8 on-device by screenshot
+(toggle/checkbox purple, consistent placeholders, the dropdown sheet with multi-select, the
+billing add/select flow). One honest gap I noted to myself: I showed the Save button's *muted*
+state on screen and proved the *valid → accent* transition by test rather than a screenshot,
+because of the automation flakiness above.
+
+### What this phase reinforced about working with the AI
+
+- **Screenshots catch what tests and values can't.** The `max_length` display/value divergence
+  and the invisible nav title were both invisible to the test suite and the model state — only
+  an on-device screenshot exposed them. Driving the real app via XcodeBuildMCP was worth it.
+- **When you can't reproduce, change the mechanism, don't guess a patch.** The dropdown got a
+  sheet, not a speculative Menu tweak.
+- **Prefer a deterministic test over a fragile UI gesture** when automation is flaky (item 5).
+- **The AI is a strong executor but I own the calls** — the accent-color centralization, the
+  security caveat on stored cards, keeping the project name, and the resilience trade-offs were
+  mine; the AI implemented and verified them.
