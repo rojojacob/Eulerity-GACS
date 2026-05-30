@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(echo \"exit: $?\")",
+      "Bash(grep -iA3 -E \"comment|big-o|big o|style|format\")",
+      "Bash(echo \"exit:$?\")"
+    ]
+  }
+}

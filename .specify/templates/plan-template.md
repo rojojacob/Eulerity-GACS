@@ -40,7 +40,22 @@
 
 *GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
 
-[Gates determined based on constitution file]
+Confirm the plan upholds every principle in `.specify/memory/constitution.md`:
+
+- [ ] **I. MVVM Architecture** — Views stay declarative; logic/state live in `@MainActor`
+      ViewModels; Models/Parsing/Validation are pure with no `import SwiftUI`.
+- [ ] **II. Tests In The Same Task** — every ViewModel/parser/validator has a Swift `Testing`
+      task in the SAME task as its code; no live network/disk beyond bundled fixtures.
+- [ ] **III. First-Party & Fully Offline** — no third-party dependencies and no networking
+      (JSON from the bundle); any exception requires an amendment noted in Complexity Tracking.
+- [ ] **IV. Algorithmic Efficiency** — every function carries a `// O(...)` comment; pre-built
+      maps/`Set`s over linear scans; no nested O(n²) scans over `fields`.
+- [ ] **V. Defensive Resilience** — no force-unwraps/`try!` on JSON paths; unknown/malformed/
+      missing/conflicting input degrades to a documented safe behavior (never crashes).
+- [ ] **VI. Simplicity & YAGNI** — every element traces to a Plan.md §2/§6 requirement; no
+      speculative abstraction.
+
+Any unchecked box MUST be justified in the Complexity Tracking table below.
 
 ## Project Structure
 

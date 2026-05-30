@@ -9,7 +9,7 @@ description: "Task list template for feature implementation"
 
 **Prerequisites**: plan.md (required), spec.md (required for user stories), research.md, data-model.md, contracts/
 
-**Tests**: The examples below include test tasks. Tests are OPTIONAL - only include them if explicitly requested in the feature specification.
+**Tests**: REQUIRED. Per Constitution Principle II (Test-First, NON-NEGOTIABLE), every ViewModel and Service gets a Swift `Testing` task written and failing BEFORE its implementation task. The sample test tasks below are not optional for this project.
 
 **Organization**: Tasks are grouped by user story to enable independent implementation and testing of each story.
 
