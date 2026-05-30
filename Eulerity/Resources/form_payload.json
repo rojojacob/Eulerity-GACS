@@ -1,0 +1,80 @@
+{
+  "form_title": "Create Campaign",
+  "theme": {
+    "background_color": "#0B1221",
+    "text_color": "#FFFFFF",
+    "border_color": "#2A3550",
+    "error_color": "#FF5A5F"
+  },
+  "fields": [
+    {
+      "id": "campaign_name",
+      "type": "TEXT",
+      "subtype": "PLAIN",
+      "order": 1,
+      "label": "Campaign Name",
+      "required": true,
+      "placeholder": "Summer Sale",
+      "max_length": 20,
+      "default_value": "Summer Sale Campaign 2026 Promo",
+      "error_message": "Campaign name is required"
+    },
+    {
+      "id": "target_network",
+      "type": "DROPDOWN",
+      "order": 2,
+      "label": "Target Network",
+      "required": true,
+      "allow_multiple": true,
+      "options": [
+        { "id": "net_meta", "label": "Meta" },
+        { "id": "net_google", "label": "Google" },
+        { "id": "net_tiktok", "label": "TikTok" }
+      ],
+      "default_values": ["net_meta"]
+    },
+    {
+      "id": "enable_notifications",
+      "type": "TOGGLE",
+      "order": 3,
+      "label": "Enable Notifications",
+      "default_value": true
+    },
+    {
+      "id": "accept_legal",
+      "type": "CHECKBOX",
+      "order": 4,
+      "label": "I accept the Terms of Service and Privacy Policy",
+      "required": true,
+      "metadata": {
+        "Terms of Service": "https://example.com/tos",
+        "Privacy Policy": "https://example.com/privacy"
+      },
+      "clickable_text_color": "#4F9DFF"
+    },
+    {
+      "id": "billing_account",
+      "type": "DROPDOWN",
+      "order": 5,
+      "label": "Billing Account",
+      "required": true,
+      "options": []
+    },
+    {
+      "id": "promo_code",
+      "type": "TEXT",
+      "subtype": "PLAIN",
+      "order": 6,
+      "label": "Promo Code",
+      "required": false,
+      "placeholder": "SAVE20",
+      "regex": "^[A-Z0-9]{4,10}$"
+    },
+    {
+      "id": "launch_color",
+      "type": "COLOR_PICKER",
+      "order": 7,
+      "label": "Launch Color"
+    }
+  ]
+}

@@ -6,11 +6,27 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXContainerItemProxy section */
+		EA000000000000000000000B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F37AF4C72FCA990900496E9B /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = F37AF4CE2FCA990900496E9B;
+			remoteInfo = Eulerity;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
+		EA0000000000000000000002 /* EulerityTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = EulerityTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		F37AF4CF2FCA990900496E9B /* Eulerity.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Eulerity.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		EA0000000000000000000003 /* EulerityTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = EulerityTests;
+			sourceTree = "<group>";
+		};
 		F37AF4D12FCA990900496E9B /* Eulerity */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = Eulerity;
@@ -19,6 +35,13 @@
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		EA0000000000000000000005 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		F37AF4CC2FCA990900496E9B /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -33,6 +56,7 @@
 			isa = PBXGroup;
 			children = (
 				F37AF4D12FCA990900496E9B /* Eulerity */,
+				EA0000000000000000000003 /* EulerityTests */,
 				F37AF4D02FCA990900496E9B /* Products */,
 			);
 			sourceTree = "<group>";
@@ -41,6 +65,7 @@
 			isa = PBXGroup;
 			children = (
 				F37AF4CF2FCA990900496E9B /* Eulerity.app */,
+				EA0000000000000000000002 /* EulerityTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -48,6 +73,29 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		EA0000000000000000000001 /* EulerityTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = EA0000000000000000000007 /* Build configuration list for PBXNativeTarget "EulerityTests" */;
+			buildPhases = (
+				EA0000000000000000000004 /* Sources */,
+				EA0000000000000000000005 /* Frameworks */,
+				EA0000000000000000000006 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				EA000000000000000000000A /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				EA0000000000000000000003 /* EulerityTests */,
+			);
+			name = EulerityTests;
+			packageProductDependencies = (
+			);
+			productName = EulerityTests;
+			productReference = EA0000000000000000000002 /* EulerityTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		F37AF4CE2FCA990900496E9B /* Eulerity */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = F37AF4DA2FCA990A00496E9B /* Build configuration list for PBXNativeTarget "Eulerity" */;
@@ -80,6 +128,10 @@
 				LastSwiftUpdateCheck = 2600;
 				LastUpgradeCheck = 2600;
 				TargetAttributes = {
+					EA0000000000000000000001 = {
+						CreatedOnToolsVersion = 26.0.1;
+						TestTargetID = F37AF4CE2FCA990900496E9B;
+					};
 					F37AF4CE2FCA990900496E9B = {
 						CreatedOnToolsVersion = 26.0.1;
 					};
@@ -100,11 +152,19 @@
 			projectRoot = "";
 			targets = (
 				F37AF4CE2FCA990900496E9B /* Eulerity */,
+				EA0000000000000000000001 /* EulerityTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		EA0000000000000000000006 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		F37AF4CD2FCA990900496E9B /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -115,6 +175,13 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		EA0000000000000000000004 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		F37AF4CB2FCA990900496E9B /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -124,7 +191,55 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		EA000000000000000000000A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = F37AF4CE2FCA990900496E9B /* Eulerity */;
+			targetProxy = EA000000000000000000000B /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin XCBuildConfiguration section */
+		EA0000000000000000000008 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = T92Y92RB48;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.wac.EulerityTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Eulerity.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Eulerity";
+			};
+			name = Debug;
+		};
+		EA0000000000000000000009 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = T92Y92RB48;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.wac.EulerityTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Eulerity.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Eulerity";
+			};
+			name = Release;
+		};
 		F37AF4D82FCA990A00496E9B /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -178,7 +293,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
@@ -236,7 +351,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
@@ -315,6 +430,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		EA0000000000000000000007 /* Build configuration list for PBXNativeTarget "EulerityTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				EA0000000000000000000008 /* Debug */,
+				EA0000000000000000000009 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		F37AF4CA2FCA990900496E9B /* Build configuration list for PBXProject "Eulerity" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
