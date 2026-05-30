@@ -60,4 +60,8 @@ nonisolated struct ResolvedTheme: Equatable, Sendable {
     /// Standard placeholder color — a faded version of the theme's text color, so
     /// placeholders read consistently on any background.
     var placeholder: Color { text.opacity(0.4) }
+
+    /// A subtle elevated surface for grouped rows in themed sheets, derived from
+    /// the text color so it works on any background.
+    var surface: Color { text.opacity(0.08) }
 }

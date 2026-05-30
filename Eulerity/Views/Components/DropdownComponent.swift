@@ -42,6 +42,7 @@ struct DropdownComponent: View {
             DropdownPickerSheet(
                 field: field,
                 viewModel: viewModel,
+                theme: theme,
                 options: options,
                 allowMultiple: allowMultiple
             )
@@ -65,6 +66,7 @@ struct DropdownComponent: View {
 struct DropdownPickerSheet: View {
     let field: FormField
     @ObservedObject var viewModel: FormViewModel
+    let theme: ResolvedTheme
     let options: [DropdownOption]
     let allowMultiple: Bool
 
@@ -82,22 +84,29 @@ struct DropdownPickerSheet: View {
                     if !allowMultiple { dismiss() }
                 } label: {
                     HStack {
-                        Text(option.label)
+                        Text(option.label).foregroundStyle(theme.text)
                         Spacer()
                         if selection.contains(option.id) {
-                            Image(systemName: "checkmark").foregroundStyle(.tint)
+                            Image(systemName: "checkmark").foregroundStyle(theme.accent)
                         }
                     }
                 }
-                .tint(.primary)
+                .listRowBackground(theme.surface)
             }
-            .navigationTitle(field.label)
+            .scrollContentBackground(.hidden)
+            .background(theme.background.ignoresSafeArea())
             .navigationBarTitleDisplayMode(.inline)
+            .toolbarBackground(theme.background, for: .navigationBar)
+            .toolbarBackground(.visible, for: .navigationBar)
             .toolbar {
+                ToolbarItem(placement: .principal) {
+                    Text(field.label).font(.headline).foregroundStyle(theme.text)
+                }
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Done") { dismiss() }
                 }
             }
+            .tint(theme.accent)
         }
         .presentationDetents([.medium, .large])
     }

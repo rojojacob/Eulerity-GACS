@@ -39,6 +39,7 @@ struct BillingAccountComponent: View {
         .sheet(isPresented: $showingSheet) {
             BillingAccountSheet(
                 store: store,
+                theme: theme,
                 selectedCardID: viewModel.values[field.id]?.selection?.first
             ) { cardID in
                 viewModel.select(field.id, optionID: cardID)
@@ -51,6 +52,7 @@ struct BillingAccountComponent: View {
 /// one. System-styled so it reads as a standard iOS sheet.
 struct BillingAccountSheet: View {
     @ObservedObject var store: CardStore
+    let theme: ResolvedTheme
     let selectedCardID: String?
     let onSelect: (String) -> Void
 
@@ -70,9 +72,11 @@ struct BillingAccountSheet: View {
     var body: some View {
         NavigationStack {
             Form {
-                Section("Saved cards") {
+                Section {
                     if store.cards.isEmpty {
-                        Text("No cards added yet.").foregroundStyle(.secondary)
+                        Text("No cards added yet.")
+                            .foregroundStyle(theme.placeholder)
+                            .listRowBackground(theme.surface)
                     } else {
                         ForEach(store.cards) { card in
                             Button {
@@ -81,41 +85,61 @@ struct BillingAccountSheet: View {
                             } label: {
                                 HStack {
                                     VStack(alignment: .leading, spacing: 2) {
-                                        Text(card.holderName)
+                                        Text(card.holderName).foregroundStyle(theme.text)
                                         Text(card.maskedNumber)
                                             .font(.caption)
-                                            .foregroundStyle(.secondary)
+                                            .foregroundStyle(theme.placeholder)
                                     }
                                     Spacer()
                                     if card.id == selectedCardID {
-                                        Image(systemName: "checkmark").foregroundStyle(.tint)
+                                        Image(systemName: "checkmark").foregroundStyle(theme.accent)
                                     }
                                 }
                             }
-                            .tint(.primary)
+                            .listRowBackground(theme.surface)
                         }
                     }
+                } header: {
+                    Text("Saved cards").foregroundStyle(theme.text.opacity(0.6))
                 }
 
-                Section("Add a card") {
-                    TextField("Full name", text: $holderName)
+                Section {
+                    TextField("", text: $holderName, prompt: Text("Full name").foregroundColor(theme.placeholder))
+                        .foregroundStyle(theme.text)
                         .textContentType(.name)
-                    TextField("Card number", text: $number)
+                        .listRowBackground(theme.surface)
+                    TextField("", text: $number, prompt: Text("Card number").foregroundColor(theme.placeholder))
+                        .foregroundStyle(theme.text)
                         .keyboardType(.numberPad)
-                    TextField("Exp date (MM/YY)", text: $expiry)
-                    SecureField("CVV", text: $cvv)
+                        .listRowBackground(theme.surface)
+                    TextField("", text: $expiry, prompt: Text("Exp date (MM/YY)").foregroundColor(theme.placeholder))
+                        .foregroundStyle(theme.text)
+                        .listRowBackground(theme.surface)
+                    SecureField("", text: $cvv, prompt: Text("CVV").foregroundColor(theme.placeholder))
+                        .foregroundStyle(theme.text)
                         .keyboardType(.numberPad)
+                        .listRowBackground(theme.surface)
                     Button("Add card", action: addCard)
                         .disabled(!canAdd)
+                        .listRowBackground(theme.surface)
+                } header: {
+                    Text("Add a card").foregroundStyle(theme.text.opacity(0.6))
                 }
             }
-            .navigationTitle("Billing Account")
+            .scrollContentBackground(.hidden)
+            .background(theme.background.ignoresSafeArea())
             .navigationBarTitleDisplayMode(.inline)
+            .toolbarBackground(theme.background, for: .navigationBar)
+            .toolbarBackground(.visible, for: .navigationBar)
             .toolbar {
+                ToolbarItem(placement: .principal) {
+                    Text("Billing Account").font(.headline).foregroundStyle(theme.text)
+                }
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Done") { dismiss() }
                 }
             }
+            .tint(theme.accent)
         }
         .presentationDetents([.medium, .large])
     }
