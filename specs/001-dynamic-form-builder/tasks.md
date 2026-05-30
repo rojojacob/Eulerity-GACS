@@ -31,9 +31,11 @@ task before the previous task's G5 is green.
 
 ## Phase B — Polymorphic parsing (core)
 
-- [ ] **B1** `feat: field type + subtype enums` — `FieldType` with `.unsupported(rawValue:)`;
-  `TextSubtype` PLAIN/MULTILINE/NUMBER/URI/SECURE, unknown → `.plain`.
-  **Tests**: `DecodingTests.test_unknownType_mapsToUnsupported()`, `test_unknownSubtype_defaultsToPlain()`.
+- [x] **B1** `feat: field type + subtype enums` — `FieldType` (`.text/.dropdown/.toggle/.checkbox`
+  + `.unsupported(rawValue:)`), exact case-sensitive match, unknown → unsupported (no throw);
+  `TextSubtype` PLAIN/MULTILINE/NUMBER/URI/SECURE, unknown → `.plain`. Both pure, defensive `Decodable`.
+  **Tests**: `DecodingTests` — known types/subtypes, unknown type → `.unsupported`, case-sensitivity,
+  `isSupported`, unknown subtype → `.plain`. **✅ Done & verified** (19 tests / 6 suites green).
 - [ ] **B2** `feat: polymorphic Codable decoding` — `FormField` flat struct + computed `kind`;
   element-by-element decode, malformed/`.unsupported` collected & excluded, never aborts payload;
   per-dropdown `[id:label]` map; `default_value` String|Bool|array handling.
