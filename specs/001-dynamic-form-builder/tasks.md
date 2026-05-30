@@ -67,11 +67,12 @@ task before the previous task's G5 is green.
 
 ## Phase D — Validation
 
-- [ ] **D1** `feat: validation engine` — `Validator.validate(fields:values:) -> [String:String]`;
-  required, regex (compile once), max_length re-check, multi-select-required, empty-options-required
-  conflict; invalid regex pattern ignored safely.
-  **Tests**: `ValidationTests` (required missing/present, regex pass/fail, multiselect-required-empty,
-  invalid-regex-ignored). Depends on C1.
+- [x] **D1** `feat: validation engine` — pure `Validator.validate(fields:values:) -> [String:String]`;
+  required (text/checkbox/dropdown), `TEXT` regex, max_length re-check, multi-select-required,
+  empty-options-required conflict surfaced (#3); invalid regex pattern ignored safely (#11). O(n).
+  **Tests**: `ValidationTests` (10) — required missing/present, regex pass/fail/invalid-ignored,
+  optional-empty-with-regex valid, multiselect-required-empty, empty-options conflict, required
+  checkbox, fully-valid form. **✅ Done & verified** (56 tests / 13 suites green).
 - [ ] **D2** `feat: submit + payload print` — `validateAndSubmit()` sets `errors`; if empty, build
   `[String:Any]` of non-empty values, print JSON shape, set confirmation; scalars vs arrays preserved.
   **Tests**: `ViewModelTests.test_submitBlockedWhenInvalid()`, `test_submitPayloadShapeMatchesValues()`. Depends on C2, D1.

@@ -218,9 +218,10 @@ A few non-obvious things I can speak to directly:
 
 ## Status & next steps
 
-- **Done & verified**: A1–A2, B1–B3 (parsing core), and C1–C2 (the `FormViewModel`: ordering,
-  seeded defaults, and the update intents with a live max-length guard) — all green through the
-  5-gate loop (**46 tests / 12 suites**). Phase C complete.
-- **Next**: D1 (validation engine) → D2 (submit) → Phase E (views) → the rest of `Plan.md §6`.
+- **Done & verified**: A1–A2, B1–B3 (parsing core), C1–C2 (`FormViewModel`), and D1 (the pure
+  `Validator` — required / regex / max-length / multi-select / empty-options conflict, with invalid
+  regex patterns ignored safely) — all green through the 5-gate loop (**56 tests / 13 suites**).
+- **Next**: D2 (submit: validate, print payload, confirm) → Phase E (the SwiftUI views) → the rest
+  of `Plan.md §6`.
 - I will keep appending to this log as the build progresses, capturing prompts, accepted
   suggestions, push-backs, and any bugs the AI gets wrong.
