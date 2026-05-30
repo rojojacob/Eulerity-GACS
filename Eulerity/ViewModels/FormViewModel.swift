@@ -21,9 +21,21 @@ final class FormViewModel: ObservableObject {
     /// fieldId → current value. Mutated only through the intent methods below.
     @Published private(set) var values: [String: FieldValue]
 
+    /// fieldId → validation error message, populated on Save. Empty == valid.
+    @Published private(set) var errors: [String: String] = [:]
+
+    /// Set when a valid form is submitted; drives the confirmation alert.
+    @Published private(set) var confirmation: Confirmation?
+
     /// fieldId → field, for O(1) metadata lookup (`max_length`, `allow_multiple`)
     /// during updates — never a linear scan of `orderedFields` (Constitution IV).
     private let fieldsByID: [String: FormField]
+
+    /// The result of a successful submit: the typed payload and its pretty JSON.
+    struct Confirmation: Equatable {
+        let payload: [String: SubmitValue]
+        let json: String
+    }
 
     init(payload: FormPayload) {
         formTitle = payload.formTitle
@@ -70,6 +82,68 @@ final class FormViewModel: ObservableObject {
         } else {
             values[id] = .selection([optionID])
         }
+    }
+
+    // MARK: - Submit
+
+    /// Validates the form; on success builds and prints the submit payload and sets
+    /// ``confirmation``. On failure, populates ``errors`` and submits nothing
+    /// (Plan.md D2).
+    func validateAndSubmit() {
+        errors = Validator.validate(fields: orderedFields, values: values)
+        guard errors.isEmpty else {
+            confirmation = nil
+            return
+        }
+        let payload = submissionPayload()
+        let json = Self.prettyJSON(payload)
+        print(json)
+        confirmation = Confirmation(payload: payload, json: json)
+    }
+
+    /// Clears the confirmation (e.g. when the alert is dismissed).
+    func dismissConfirmation() {
+        confirmation = nil
+    }
+
+    /// The values to submit, keyed by field id. Empty text and empty selections are
+    /// omitted; a single-select emits a scalar id, a multi-select an array, and a
+    /// toggle/checkbox its bool — preserving scalars vs arrays (Plan.md D2).
+    /// - Complexity: O(n) over fields.
+    func submissionPayload() -> [String: SubmitValue] {
+        var payload: [String: SubmitValue] = [:]
+        for field in orderedFields {
+            guard let value = values[field.id],
+                  let submit = Self.submitValue(for: field, value: value) else { continue }
+            payload[field.id] = submit
+        }
+        return payload
+    }
+
+    private static func submitValue(for field: FormField, value: FieldValue) -> SubmitValue? {
+        switch field.kind {
+        case .text:
+            guard let text = value.text, !text.isEmpty else { return nil }
+            return .string(text)
+        case .toggle, .checkbox:
+            return .bool(value.bool ?? false)
+        case .dropdown(_, let allowMultiple):
+            let selection = value.selection ?? []
+            guard !selection.isEmpty else { return nil }
+            return allowMultiple ? .strings(selection) : .string(selection[0])
+        case .unsupported:
+            return nil
+        }
+    }
+
+    private static func prettyJSON(_ payload: [String: SubmitValue]) -> String {
+        let object = payload.mapValues { $0.jsonValue }
+        guard JSONSerialization.isValidJSONObject(object),
+              let data = try? JSONSerialization.data(withJSONObject: object, options: [.prettyPrinted, .sortedKeys]),
+              let string = String(data: data, encoding: .utf8) else {
+            return "{}"
+        }
+        return string
     }
 
     // MARK: - Ordering

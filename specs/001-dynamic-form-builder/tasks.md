@@ -73,9 +73,12 @@ task before the previous task's G5 is green.
   **Tests**: `ValidationTests` (10) — required missing/present, regex pass/fail/invalid-ignored,
   optional-empty-with-regex valid, multiselect-required-empty, empty-options conflict, required
   checkbox, fully-valid form. **✅ Done & verified** (56 tests / 13 suites green).
-- [ ] **D2** `feat: submit + payload print` — `validateAndSubmit()` sets `errors`; if empty, build
-  `[String:Any]` of non-empty values, print JSON shape, set confirmation; scalars vs arrays preserved.
-  **Tests**: `ViewModelTests.test_submitBlockedWhenInvalid()`, `test_submitPayloadShapeMatchesValues()`. Depends on C2, D1.
+- [x] **D2** `feat: submit + payload print` — `validateAndSubmit()` sets `@Published errors`; if empty,
+  builds a typed `[String: SubmitValue]` of non-empty values (text→scalar, single-select→scalar id,
+  multi-select→array, toggle/checkbox→bool), prints pretty JSON, sets `@Published confirmation`.
+  **Tests**: `ViewModelSubmitTests` — invalid blocks + surfaces errors, payload shape preserves
+  scalars/arrays/bools, empty values omitted, dismiss clears. **✅ Done & verified** (60 tests / 14
+  suites green). **Phase D complete — entire non-UI core done.**
 
 ## Phase E — Views
 

@@ -218,10 +218,12 @@ A few non-obvious things I can speak to directly:
 
 ## Status & next steps
 
-- **Done & verified**: A1–A2, B1–B3 (parsing core), C1–C2 (`FormViewModel`), and D1 (the pure
-  `Validator` — required / regex / max-length / multi-select / empty-options conflict, with invalid
-  regex patterns ignored safely) — all green through the 5-gate loop (**56 tests / 13 suites**).
-- **Next**: D2 (submit: validate, print payload, confirm) → Phase E (the SwiftUI views) → the rest
-  of `Plan.md §6`.
+- **Done & verified**: A1–A2, B1–B3 (parsing core), C1–C2 (`FormViewModel`), and D1–D2 (validation
+  + submit) — all green through the 5-gate loop (**60 tests / 14 suites**). **The entire non-UI core
+  is built and tested** — model, parsing, loading, state, updates, validation, and a submit that
+  preserves scalars/arrays/bools — fully offline, no force-unwraps on JSON paths, every function
+  complexity-annotated.
+- **Next**: Phase E — the SwiftUI views (themed `FormScreen` + the four field components), where the
+  isolation split (pure `nonisolated` core vs `@MainActor` UI) finally renders on screen.
 - I will keep appending to this log as the build progresses, capturing prompts, accepted
   suggestions, push-backs, and any bugs the AI gets wrong.

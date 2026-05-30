@@ -122,3 +122,72 @@ struct ViewModelUpdateTests {
         #expect(vm.values["d"] == .selection(["o2"]))
     }
 }
+
+@Suite("FormViewModel submit")
+@MainActor
+struct ViewModelSubmitTests {
+
+    private func viewModel(_ json: String) throws -> FormViewModel {
+        FormViewModel(payload: try JSONDecoder().decode(FormPayload.self, from: Data(json.utf8)))
+    }
+
+    @Test("An invalid form blocks submit and surfaces errors")
+    func submitBlockedWhenInvalid() throws {
+        let vm = try viewModel(#"{"fields":[{"id":"name","type":"TEXT","label":"N","required":true}]}"#)
+        vm.validateAndSubmit()
+        #expect(vm.errors["name"] != nil)
+        #expect(vm.confirmation == nil)
+    }
+
+    @Test("A valid submit preserves scalars, arrays, and bools in the payload")
+    func submitPayloadShapeMatchesValues() throws {
+        let vm = try viewModel(#"""
+        {"fields":[
+          {"id":"campaign_name","type":"TEXT","label":"N","required":true},
+          {"id":"single_net","type":"DROPDOWN","label":"S","options":[{"id":"net_meta","label":"Meta"}]},
+          {"id":"ad_networks","type":"DROPDOWN","label":"A","allow_multiple":true,
+           "options":[{"id":"a","label":"A"},{"id":"b","label":"B"}]},
+          {"id":"accept_legal","type":"CHECKBOX","label":"L"}
+        ]}
+        """#)
+        vm.updateText("campaign_name", to: "Summer Sale")
+        vm.select("single_net", optionID: "net_meta")
+        vm.select("ad_networks", optionID: "a")
+        vm.select("ad_networks", optionID: "b")
+        vm.toggle("accept_legal")
+
+        vm.validateAndSubmit()
+
+        #expect(vm.errors.isEmpty)
+        let payload = try #require(vm.confirmation?.payload)
+        #expect(payload["campaign_name"] == .string("Summer Sale"))   // text → scalar
+        #expect(payload["single_net"] == .string("net_meta"))         // single-select → scalar id
+        #expect(payload["ad_networks"] == .strings(["a", "b"]))       // multi-select → array
+        #expect(payload["accept_legal"] == .bool(true))              // checkbox → bool
+    }
+
+    @Test("Empty text and empty selections are omitted; bools are always included")
+    func omitsEmptyValues() throws {
+        let vm = try viewModel(#"""
+        {"fields":[
+          {"id":"name","type":"TEXT","label":"N"},
+          {"id":"net","type":"DROPDOWN","label":"D","options":[{"id":"o1","label":"One"}]},
+          {"id":"flag","type":"TOGGLE","label":"F"}
+        ]}
+        """#)
+        vm.validateAndSubmit()
+        let payload = try #require(vm.confirmation?.payload)
+        #expect(payload["name"] == nil)
+        #expect(payload["net"] == nil)
+        #expect(payload["flag"] == .bool(false))
+    }
+
+    @Test("Dismiss clears the confirmation")
+    func dismissClearsConfirmation() throws {
+        let vm = try viewModel(#"{"fields":[{"id":"f","type":"TOGGLE","label":"F"}]}"#)
+        vm.validateAndSubmit()
+        #expect(vm.confirmation != nil)
+        vm.dismissConfirmation()
+        #expect(vm.confirmation == nil)
+    }
+}
