@@ -5,11 +5,14 @@
 
 import SwiftUI
 
-/// A `DROPDOWN` control. The menu shows option **labels**; selecting stores the
-/// option **id** through the view model's `select` intent (single-select replaces,
-/// multi-select toggles membership, with a checkmark on chosen rows). The closed
-/// state resolves selected ids back to labels via the field's O(1) label map.
-/// Empty options render a disabled hint rather than an unusable control (§7 #3).
+/// A `DROPDOWN` control. Tapping opens a sheet listing the options (with
+/// checkmarks); selecting stores the option **id** via the view model's `select`
+/// intent (single-select replaces and dismisses, multi-select toggles membership
+/// and stays open). The collapsed field resolves the selected ids back to labels
+/// via the field's O(1) label map.
+///
+/// A sheet is used instead of a `Menu` so presentation is reliable across iOS
+/// versions and multi-select doesn't dismiss on every tap.
 struct DropdownComponent: View {
     let field: FormField
     @ObservedObject var viewModel: FormViewModel
@@ -17,36 +20,31 @@ struct DropdownComponent: View {
     let options: [DropdownOption]
     let allowMultiple: Bool
 
+    @State private var showingPicker = false
+
     var body: some View {
-        if options.isEmpty {
-            Text("No options available")
-                .font(.footnote)
-                .foregroundStyle(theme.text.opacity(0.55))
-                .themedField(theme)
-        } else {
-            Menu {
-                ForEach(options) { option in
-                    Button {
-                        viewModel.select(field.id, optionID: option.id)
-                    } label: {
-                        if selection.contains(option.id) {
-                            Label(option.label, systemImage: "checkmark")
-                        } else {
-                            Text(option.label)
-                        }
-                    }
-                }
-            } label: {
-                HStack {
-                    Text(closedLabel)
-                        .foregroundStyle(selection.isEmpty ? theme.text.opacity(0.5) : theme.text)
-                    Spacer()
-                    Image(systemName: "chevron.up.chevron.down")
-                        .font(.footnote)
-                        .foregroundStyle(theme.text.opacity(0.6))
-                }
-                .themedField(theme)
+        Button {
+            showingPicker = true
+        } label: {
+            HStack {
+                Text(closedLabel)
+                    .foregroundStyle(selection.isEmpty ? theme.placeholder : theme.text)
+                    .lineLimit(1)
+                Spacer()
+                Image(systemName: "chevron.up.chevron.down")
+                    .font(.footnote)
+                    .foregroundStyle(theme.text.opacity(0.6))
             }
+            .themedField(theme)
+        }
+        .buttonStyle(.plain)
+        .sheet(isPresented: $showingPicker) {
+            DropdownPickerSheet(
+                field: field,
+                viewModel: viewModel,
+                options: options,
+                allowMultiple: allowMultiple
+            )
         }
     }
 
@@ -59,5 +57,48 @@ struct DropdownComponent: View {
     private var closedLabel: String {
         let labels = selection.compactMap { field.optionLabel(for: $0) }
         return labels.isEmpty ? (field.placeholder ?? "Select…") : labels.joined(separator: ", ")
+    }
+}
+
+/// The option picker presented as a sheet. Observes the view model so checkmarks
+/// reflect the live selection while multi-selecting.
+struct DropdownPickerSheet: View {
+    let field: FormField
+    @ObservedObject var viewModel: FormViewModel
+    let options: [DropdownOption]
+    let allowMultiple: Bool
+
+    @Environment(\.dismiss) private var dismiss
+
+    private var selection: [String] {
+        viewModel.values[field.id]?.selection ?? []
+    }
+
+    var body: some View {
+        NavigationStack {
+            List(options) { option in
+                Button {
+                    viewModel.select(field.id, optionID: option.id)
+                    if !allowMultiple { dismiss() }
+                } label: {
+                    HStack {
+                        Text(option.label)
+                        Spacer()
+                        if selection.contains(option.id) {
+                            Image(systemName: "checkmark").foregroundStyle(.tint)
+                        }
+                    }
+                }
+                .tint(.primary)
+            }
+            .navigationTitle(field.label)
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Done") { dismiss() }
+                }
+            }
+        }
+        .presentationDetents([.medium, .large])
     }
 }

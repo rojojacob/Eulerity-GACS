@@ -85,4 +85,19 @@ struct BundledPayloadTests {
         #expect(vm.errors.keys.sorted() == ["billing_account"])
         #expect(vm.confirmation == nil)
     }
+
+    @Test("isFormValid flips true once every required field is satisfied (drives Save color)")
+    func isFormValidReflectsCompletion() throws {
+        let vm = try loadedViewModel()
+        #expect(vm.isFormValid == false)   // Save stays muted while required fields are empty
+
+        vm.updateText("daily_budget", to: "50.00")
+        vm.updateText("destination_url", to: "https://example.com")
+        vm.updateText("admin_password", to: "secret123")
+        vm.select("ad_networks", optionID: "net_google")
+        vm.select("billing_account", optionID: "local-card-1")   // a locally-added card
+        vm.toggle("accept_legal")
+
+        #expect(vm.isFormValid == true)    // now valid → Save turns accent (#BB86FC)
+    }
 }

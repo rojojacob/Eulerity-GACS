@@ -20,7 +20,7 @@ struct CheckboxComponent: View {
         HStack(alignment: .firstTextBaseline, spacing: 10) {
             Button(action: { viewModel.toggle(field.id) }) {
                 Image(systemName: isOn ? "checkmark.square.fill" : "square")
-                    .foregroundStyle(isOn ? theme.border : theme.text.opacity(0.6))
+                    .foregroundStyle(isOn ? theme.accent : theme.text.opacity(0.6))
             }
             .buttonStyle(.plain)
 

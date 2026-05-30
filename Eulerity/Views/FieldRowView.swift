@@ -47,8 +47,14 @@ struct FieldRowView: View {
             TextFieldComponent(field: field, subtype: subtype, viewModel: viewModel, theme: theme,
                                focusedField: $focusedField)
         case .dropdown(let options, let allowMultiple):
-            DropdownComponent(field: field, viewModel: viewModel, theme: theme,
-                              options: options, allowMultiple: allowMultiple)
+            if options.isEmpty {
+                // A required dropdown with no preset options becomes the local
+                // "add a billing account" flow (Plan.md F7).
+                BillingAccountComponent(field: field, viewModel: viewModel, theme: theme)
+            } else {
+                DropdownComponent(field: field, viewModel: viewModel, theme: theme,
+                                  options: options, allowMultiple: allowMultiple)
+            }
         case .toggle:
             ToggleComponent(field: field, viewModel: viewModel, theme: theme)
         case .checkbox:

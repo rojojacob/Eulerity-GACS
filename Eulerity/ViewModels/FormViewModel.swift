@@ -102,6 +102,12 @@ final class FormViewModel: ObservableObject {
 
     // MARK: - Submit
 
+    /// Whether the form currently passes validation — drives the Save button's
+    /// active color (indicate "ready to submit"). - Complexity: O(n) over fields.
+    var isFormValid: Bool {
+        Validator.validate(fields: orderedFields, values: values, regexes: compiledRegexes).isEmpty
+    }
+
     /// Validates the form; on success builds and prints the submit payload and sets
     /// ``confirmation``. On failure, populates ``errors`` and submits nothing
     /// (Plan.md D2).

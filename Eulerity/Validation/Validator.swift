@@ -54,13 +54,10 @@ nonisolated enum Validator {
             let isOn = value?.bool ?? false
             return (field.isRequired && !isOn) ? requiredMessage(field) : nil
 
-        case .dropdown(let options, _):
+        case .dropdown:
             guard field.isRequired else { return nil }
-            if options.isEmpty {
-                // §7 #3: required but no options to choose — surface the conflict
-                // instead of letting an unsatisfiable field pass silently.
-                return field.errorMessage ?? "No options are available, so this required field can't be completed."
-            }
+            // A chosen option (or a locally-added billing card) satisfies it; an
+            // empty selection is still surfaced (§7 #3) so submit stays blocked.
             let selection = value?.selection ?? []
             return selection.isEmpty ? requiredMessage(field) : nil
 

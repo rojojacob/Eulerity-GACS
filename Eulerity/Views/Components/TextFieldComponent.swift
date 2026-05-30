@@ -62,21 +62,23 @@ struct TextFieldComponent: View {
     }
 
     @ViewBuilder private var input: some View {
-        let prompt = field.placeholder ?? ""
+        // Fall back to the field label when no placeholder is given (item 2), and
+        // color every placeholder consistently from the theme (item 3).
+        let prompt = Text(field.placeholder ?? field.label).foregroundColor(theme.placeholder)
         switch subtype {
         case .plain:
-            TextField(prompt, text: $text)
+            TextField("", text: $text, prompt: prompt)
         case .multiline:
-            TextField(prompt, text: $text, axis: .vertical).lineLimit(3...6)
+            TextField("", text: $text, prompt: prompt, axis: .vertical).lineLimit(3...6)
         case .number:
-            TextField(prompt, text: $text).keyboardType(.decimalPad)
+            TextField("", text: $text, prompt: prompt).keyboardType(.decimalPad)
         case .uri:
-            TextField(prompt, text: $text)
+            TextField("", text: $text, prompt: prompt)
                 .keyboardType(.URL)
                 .textInputAutocapitalization(.never)
                 .autocorrectionDisabled()
         case .secure:
-            SecureField(prompt, text: $text)
+            SecureField("", text: $text, prompt: prompt)
         }
     }
 }

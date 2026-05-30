@@ -16,7 +16,7 @@ struct ToggleComponent: View {
         Toggle(isOn: binding) {
             Text(field.label).foregroundStyle(theme.text)
         }
-        .tint(theme.border)
+        .tint(theme.accent)
     }
 
     private var binding: Binding<Bool> {

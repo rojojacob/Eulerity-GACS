@@ -35,7 +35,7 @@ struct FormContentView: View {
                         Text("Save").frame(maxWidth: .infinity)
                     }
                     .buttonStyle(.borderedProminent)
-                    .tint(theme.border)
+                    .tint(viewModel.isFormValid ? theme.accent : theme.border)
                     .padding(.top, 8)
                 }
                 .padding()
@@ -52,12 +52,6 @@ struct FormContentView: View {
                         .foregroundStyle(theme.text)
                         .lineLimit(1)
                         .minimumScaleFactor(0.7)
-                }
-                ToolbarItemGroup(placement: .keyboard) {
-                    Button("Next", action: focusNext)
-                        .disabled(isLastTextField)
-                    Spacer()
-                    Button("Done") { focusedField = nil }
                 }
             }
             .alert(
@@ -81,19 +75,6 @@ struct FormContentView: View {
         )
     }
 
-    /// Advances focus to the next text field, or dismisses the keyboard past the last.
-    /// - Complexity: O(k) in the number of text fields.
-    private func focusNext() {
-        let ids = viewModel.textFieldIDsInOrder
-        guard let current = focusedField, let index = ids.firstIndex(of: current) else { return }
-        focusedField = index + 1 < ids.count ? ids[index + 1] : nil
-    }
-
-    /// Whether the focused field is the last text field (so Next can be disabled).
-    private var isLastTextField: Bool {
-        guard let current = focusedField else { return true }
-        return viewModel.textFieldIDsInOrder.last == current
-    }
 }
 
 #Preview {

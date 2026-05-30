@@ -52,4 +52,12 @@ nonisolated struct ResolvedTheme: Equatable, Sendable {
         guard let hex, let rgba = HexColorParser.rgba(from: hex) else { return fallback }
         return Color(.sRGB, red: rgba.red, green: rgba.green, blue: rgba.blue, opacity: rgba.alpha)
     }
+
+    /// Brand accent (`#BB86FC`) used for active/affordance states: a valid Save
+    /// button, a checked checkbox, an on toggle. Fixed across payload themes.
+    var accent: Color { Color(.sRGB, red: 187.0 / 255.0, green: 134.0 / 255.0, blue: 252.0 / 255.0, opacity: 1) }
+
+    /// Standard placeholder color — a faded version of the theme's text color, so
+    /// placeholders read consistently on any background.
+    var placeholder: Color { text.opacity(0.4) }
 }
