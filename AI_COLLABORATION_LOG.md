@@ -160,6 +160,35 @@ ties back to the isolation lesson from Phase 2.
 
 ---
 
+## Phase 6 — Phase B parsing, and a compiler crash
+
+B1 added the `FieldType` / `TextSubtype` taxonomy (unknown type → `.unsupported`, unknown subtype
+→ `.plain`). B2 is the core: `FormField` (flat struct + computed `kind`) and a `FormPayload` that
+decodes the `fields` array **element-by-element** via a lossy `Failable` wrapper, so one bad field
+is skipped while the rest survive — the resilience this exercise is really testing.
+
+**Debug #4 — the Swift compiler itself crashed.** The first B2 build didn't fail with a normal
+error; it produced a compiler **ICE** (`bad_optional_access`) while type-checking
+`FormPayload.init(from:)`. I read the crash backtrace, saw it named that initializer, and
+recognized the cause: I'd stacked too many nested optional-`try?` expressions
+(`((try? c.decodeIfPresent(...)) ?? nil) ?? "")`) and it tipped the type-checker over —
+tellingly, `FormField.init` used the same pattern and compiled, so it was the *extra* nesting in
+`FormPayload`. The fix was to flatten to clean single-optional forms
+(`try container.decodeIfPresent(...) ?? ""`); per-element resilience stays in `Failable`, and a
+corrupt *top-level* shape is left to throw and be handled by the loader (B3). Lesson: when the
+compiler crashes, the bug is still usually *your* expression — simplify it, don't fight it.
+
+**Debug #5 — the isolation lesson, again.** With the crash gone, three warnings appeared (errors
+under Swift 6): `Failable.value` and `FieldType.isSupported` were main-actor-isolated and
+referenced from nonisolated decode code. Same root cause as Phase 2 — a struct I hadn't marked
+`nonisolated`, and a computed property living in an `extension` (where the type's `nonisolated`
+doesn't reach). Marking both `nonisolated` cleared it. I treat every warning as an error and read
+it; that discipline is what keeps this class of bug out of the submission.
+
+Result: B1 + B2 green — **31 tests / 8 suites, zero warnings** — including the resilience cases
+(malformed field skipped, unknown type excluded, empty options, missing-fields array, and the
+bundled payload decoding to 6 renderable fields with 1 excluded).
+
 ## Where I accept AI vs. where I push back — the pattern
 
 - **Accept**: mechanical scaffolding, `.pbxproj` editing, boilerplate, test wiring, and anything
@@ -189,8 +218,8 @@ A few non-obvious things I can speak to directly:
 
 ## Status & next steps
 
-- **Done & verified**: A1 (scaffold) and A2 (theme/hex) — both green through the 5-gate loop.
-- **Next**: B1 (`FieldType`/`TextSubtype` enums with `.unsupported` decoding) → B2 (polymorphic,
-  skip-unknown decoding) → the rest of `Plan.md §6`.
+- **Done & verified**: A1 (scaffold), A2 (theme/hex), B1 (type taxonomy), B2 (polymorphic
+  skip-unknown decoding) — all green through the 5-gate loop (**31 tests / 8 suites**).
+- **Next**: B3 (bundle loader with typed errors) → C1 (state + defaults) → the rest of `Plan.md §6`.
 - I will keep appending to this log as the build progresses, capturing prompts, accepted
   suggestions, push-backs, and any bugs the AI gets wrong.

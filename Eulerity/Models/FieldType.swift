@@ -40,7 +40,7 @@ extension FieldType: Decodable {
 
     /// Whether this type is one the app knows how to render.
     /// - Complexity: O(1).
-    var isSupported: Bool {
+    nonisolated var isSupported: Bool {
         if case .unsupported = self { return false }
         return true
     }

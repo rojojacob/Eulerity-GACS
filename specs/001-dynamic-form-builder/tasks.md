@@ -36,12 +36,14 @@ task before the previous task's G5 is green.
   `TextSubtype` PLAIN/MULTILINE/NUMBER/URI/SECURE, unknown → `.plain`. Both pure, defensive `Decodable`.
   **Tests**: `DecodingTests` — known types/subtypes, unknown type → `.unsupported`, case-sensitivity,
   `isSupported`, unknown subtype → `.plain`. **✅ Done & verified** (19 tests / 6 suites green).
-- [ ] **B2** `feat: polymorphic Codable decoding` — `FormField` flat struct + computed `kind`;
-  element-by-element decode, malformed/`.unsupported` collected & excluded, never aborts payload;
-  per-dropdown `[id:label]` map; `default_value` String|Bool|array handling.
-  **Tests**: `DecodingTests` (sample → 4 fields; All-in-One excludes `COLOR_PICKER`;
-  `test_emptyOptionsArray_decodes()`, `test_malformedSingleField_isSkipped_othersSurvive()`,
-  `test_missingFieldsArray_yieldsEmptyForm()`). Depends on B1.
+- [x] **B2** `feat: polymorphic Codable decoding` — `FormField` flat struct + computed `kind` +
+  `DropdownOption`; `FormPayload` decodes `fields` element-by-element via a lossy `Failable`
+  wrapper, excluding malformed/`.unsupported` fields without aborting (counted in
+  `skippedFieldCount`); per-dropdown `[id:label]` map (O(1) lookup); `default_value`
+  String|Bool|array handling.
+  **Tests**: `DecodingTests` — 4 known types, unknown excluded, empty options, malformed-skipped,
+  missing-fields → empty, bundled payload → 6 renderable / 1 skipped. **✅ Done & verified**
+  (31 tests / 8 suites green; required flattening a compiler-crashing nested-optional expression).
 - [ ] **B3** `feat: bundle JSON loader` — `FormLoader.load(resource:) -> Result<FormPayload, FormLoadError>`;
   missing/unreadable/corrupt → typed error, no crash.
   **Tests**: `LoaderTests.test_missingResource_returnsFileNotFound()`, `test_corruptJSON_returnsDecodingError()`. Depends on B2.
