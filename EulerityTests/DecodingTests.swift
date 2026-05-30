@@ -187,13 +187,30 @@ struct FormPayloadTests {
         #expect(payload.formTitle == "Empty")
     }
 
-    @Test("The bundled sample payload decodes; COLOR_PICKER is excluded")
+    @Test("The bundled payload decodes: 8 renderable fields, COLOR_PICKER excluded")
     func bundledPayloadDecodes() throws {
         let url = try #require(Bundle.main.url(forResource: "form_payload", withExtension: "json"))
         let payload = try JSONDecoder().decode(FormPayload.self, from: Data(contentsOf: url))
-        #expect(payload.fields.count == 6)
+
+        // 9 fields in the JSON; brand_color (COLOR_PICKER) is the one unsupported type.
+        #expect(payload.fields.count == 8)
         #expect(payload.skippedFieldCount == 1)
-        #expect(payload.fields.contains { $0.id == "campaign_name" })
         #expect(payload.fields.allSatisfy { $0.type.isSupported })
+        #expect(!payload.fields.contains { $0.id == "brand_color" })
+
+        let ids = Set(payload.fields.map(\.id))
+        #expect(ids == ["campaign_name", "daily_budget", "destination_url", "ad_networks",
+                        "billing_account", "enable_ai_opt", "admin_password", "accept_legal"])
+
+        // Spot-check each field's decoded shape.
+        let byID = Dictionary(uniqueKeysWithValues: payload.fields.map { ($0.id, $0) })
+        #expect(byID["campaign_name"]?.maxLength == 20)
+        #expect(byID["daily_budget"]?.subtype == .number)
+        #expect(byID["destination_url"]?.subtype == .uri)
+        #expect(byID["admin_password"]?.subtype == .secure)
+        #expect(byID["ad_networks"]?.allowMultiple == true)
+        #expect(byID["ad_networks"]?.options?.count == 3)
+        #expect(byID["billing_account"]?.options == [])
+        #expect(byID["accept_legal"]?.metadata?.count == 2)
     }
 }

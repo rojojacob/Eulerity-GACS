@@ -13,7 +13,7 @@ struct LoaderTests {
     @Test("Loads the bundled payload successfully")
     func loadsBundledPayload() throws {
         let payload = try FormLoader.load(resource: "form_payload").get()
-        #expect(payload.fields.count == 6)
+        #expect(payload.fields.count == 8)
     }
 
     @Test("A missing resource returns .fileNotFound")
