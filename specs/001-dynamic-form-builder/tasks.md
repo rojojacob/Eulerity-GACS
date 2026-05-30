@@ -102,10 +102,12 @@ task before the previous task's G5 is green.
 
 ## Phase F — Optional enhancements (in scope)
 
-- [ ] **F1** `feat: clickable metadata links in checkbox` — `AttributedString`, style matched
-  substrings with `clickable_text_color`/accent, open URL in Safari; missing key/malformed URL safe.
-  **Tests**: `RichTextTests.test_linkRangesResolved()`, `test_missingSubstringIgnored()`,
-  `test_malformedURLNotClickable()`. Depends on E4.
+- [x] **F1** `feat: clickable metadata links in checkbox` — pure `RichTextLabel` builds an
+  `AttributedString` linking each matched `metadata` key; `CheckboxComponent` renders box + links as
+  separate tap targets (links open Safari), tinted with `clickable_text_color`/accent; missing key or
+  malformed URL left as plain text (§7 #10). **Tests**: `RichTextTests` (4) — link ranges, missing
+  ignored, malformed URL, nil metadata. **✅ Verified on simulator** (Terms/Privacy render blue &
+  linked). 64 tests / 15 suites green.
 - [ ] **F2** `feat: regex validation UX` — surface D1 regex errors inline; compile once; bad pattern ignored.
   **Tests**: extends `ValidationTests` (D1). Depends on D1, E2.
 - [ ] **F3** `feat: keyboard Next/Done toolbar` — `@FocusState` over ordered text-field ids; Next advances, Done dismisses.
