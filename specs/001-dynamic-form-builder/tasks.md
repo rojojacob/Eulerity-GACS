@@ -118,8 +118,11 @@ task before the previous task's G5 is green.
   a keyboard `ToolbarItemGroup` with **Next** (advances, disabled on last) and **Done** (dismisses).
   **Tests**: `FocusTests.focusOrderMatchesVisualOrder` (text-only, visual order). **✅ Done & verified**
   (builds + 68 tests / 17 suites green).
-- [ ] **F4** `test: polymorphic parsing edge cases` — consolidate/extend decoding tests to cover the
-  full §7 matrix (missing arrays, conflicts, unknown types). Depends on B2.
+- [x] **F4** `test: polymorphic parsing edge cases` — `EdgeCaseTests` consolidates §7 coverage: garbage
+  order → Int.max (#7), missing optional keys → nil (#5), a hostile mixed payload (unknown type +
+  id-less element + empty-options dropdown → 3 renderable / 2 skipped) (#2/#3/#6/#12), all-invalid
+  theme → fallback (#8), no-fields → empty titled form (#6). **✅ Done & verified** (73 tests / 18
+  suites green). **Phase F complete — all 4 enhancements in.**
 
 ## Phase G — Polish & submission
 

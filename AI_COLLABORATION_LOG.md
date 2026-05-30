@@ -229,7 +229,13 @@ A few non-obvious things I can speak to directly:
   `20/20` (counter in the theme's error color at the limit), the multi-dropdown showing the default
   id resolved to its label, the empty-options dropdown disabled with a hint, the toggle on by default.
   Every §7 decision I implemented blind in the core is now visibly correct on screen. 60 tests still green.
-- **Next**: Phase F — the four enhancements (rich-text checkbox links, regex UX, focus toolbar,
-  parse-hardening tests), then Phase G (README, this log, demo video).
+- **Phase F done — all four enhancements in.** F1 rich-text checkbox links (pure `RichTextLabel`
+  builder + a checkbox whose box and links are separate tap targets, verified blue on-device); F2
+  regex UX (precompile-once caching in the VM, with the validator falling back to inline compile so
+  D1's tests stand); F3 `@FocusState` Next/Done keyboard toolbar (binding threaded through three
+  views, focus-order unit-tested); F4 a consolidated `EdgeCaseTests` suite closing out the §7 matrix
+  (hostile mixed payload → 3 renderable / 2 skipped, all-invalid theme → fallback). **73 tests / 18
+  suites, zero warnings.** The app is feature-complete (required + all optional).
+- **Next**: Phase G — README, finalize this log, and the 30–60s demo video; then Definition of Done.
 - I will keep appending to this log as the build progresses, capturing prompts, accepted
   suggestions, push-backs, and any bugs the AI gets wrong.
