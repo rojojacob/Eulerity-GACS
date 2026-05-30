@@ -88,11 +88,17 @@ task before the previous task's G5 is green.
   confirmation alert. `FieldRowView` routes on `kind` (themed placeholders now; real controls in E2–E4).
   **Verified (G5):** built + **ran on iPhone 16 Pro simulator** — dark theme renders from JSON, 6
   fields in order, `COLOR_PICKER` excluded (screenshot). 60 tests / 14 suites still green, no warnings.
-- [ ] **E2** `feat: text field component` — route 5 subtypes; `placeholder`/counter only if present;
-  SECURE masks. Depends on E1, C2.
-- [ ] **E3** `feat: dropdown component` — `Menu` showing labels, stores id; `allow_multiple` rows;
-  empty options disabled + hint. Depends on E1, C2.
-- [ ] **E4** `feat: toggle + checkbox components` — honor default/required. Depends on E1, C2.
+- [x] **E2** `feat: text field component` — `TextFieldComponent` routes PLAIN/MULTILINE/NUMBER/URI/
+  SECURE (keyboard, masking, multiline); `placeholder` + `CharacterCounterView` only when present
+  (error color at limit); `ThemedFieldStyle`. Binds via `updateText`. **✅ Built green.**
+- [x] **E3** `feat: dropdown component` — `DropdownComponent`: `Menu` of labels → stores id via
+  `select` (single replace / multi checkmark-toggle); closed label resolved via O(1) map; empty
+  options → disabled hint (§7 #3). **✅ Built green.**
+- [x] **E4** `feat: toggle + checkbox components` — `ToggleComponent` (labeled switch, honors default)
+  + `CheckboxComponent` (tappable box + inline label, honors required); `FieldRowView` omits the top
+  label for them. **✅ Verified on simulator** (screenshot): all 4 component types render, default
+  truncated to 20/20 (red counter), multi-dropdown shows resolved label, empty-options disabled.
+  **Phase E complete — the full form renders and works.** 60 tests / 14 suites green, no warnings.
 
 ## Phase F — Optional enhancements (in scope)
 

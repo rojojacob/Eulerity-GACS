@@ -223,7 +223,13 @@ A few non-obvious things I can speak to directly:
   the title, and 6 ordered fields, with the unknown `COLOR_PICKER` correctly excluded. For E1 the
   5-gate G5 was a literal **`xcodebuild build` + boot/install/launch + screenshot**, not just unit
   tests — verifying the server-driven pipeline end-to-end on screen. 60 tests / 14 suites still green.
-- **Next**: E2–E4 — replace `FieldRowView`'s placeholders with the real components (text field with
-  5 subtypes + counter, dropdown single/multi, toggle, checkbox), then F (enhancements) and G (docs).
+- **E2–E4 done — the full form renders and works.** Replaced `FieldRowView`'s placeholders with the
+  real components (5-subtype text field + live counter, single/multi dropdown, toggle, checkbox). A
+  simulator screenshot confirmed the whole pipeline together: the campaign-name default truncated to
+  `20/20` (counter in the theme's error color at the limit), the multi-dropdown showing the default
+  id resolved to its label, the empty-options dropdown disabled with a hint, the toggle on by default.
+  Every §7 decision I implemented blind in the core is now visibly correct on screen. 60 tests still green.
+- **Next**: Phase F — the four enhancements (rich-text checkbox links, regex UX, focus toolbar,
+  parse-hardening tests), then Phase G (README, this log, demo video).
 - I will keep appending to this log as the build progresses, capturing prompts, accepted
   suggestions, push-backs, and any bugs the AI gets wrong.
