@@ -5,26 +5,28 @@
 
 import SwiftUI
 
-/// The app's single screen. It renders the dynamic form described by the decoded
-/// payload — themed background, an ordered list of field components, and a Save
-/// button — and handles the load-failure / empty states.
-///
-/// Placeholder for now: field rendering, theming, validation, and the
-/// `FormViewModel` wiring are built task-by-task per Plan.md (Phases C–E).
+/// The app's single screen. Loads the bundled payload through ``FormLoader`` and
+/// renders one of three states via ``StateView``: a brief loading indicator, the
+/// themed form (``FormContentView``) on success, or a friendly message on a load
+/// failure (Plan.md E1 / §7 #6, B3).
 struct FormScreen: View {
+    @State private var loadState: ViewState<FormPayload> = .idle
+
     var body: some View {
-        VStack(spacing: 12) {
-            Image(systemName: "list.bullet.rectangle.portrait")
-                .font(.system(size: 48))
-                .foregroundStyle(.tint)
-            Text("Dynamic Form Builder")
-                .font(.title.bold())
-            Text("Skeleton ready — server-driven form rendering lands here (Plan.md Phase E).")
-                .font(.callout)
-                .foregroundStyle(.secondary)
-                .multilineTextAlignment(.center)
+        StateView(loadState) { payload in
+            FormContentView(payload: payload)
         }
-        .padding()
+        .onAppear(perform: loadIfNeeded)
+    }
+
+    private func loadIfNeeded() {
+        guard case .idle = loadState else { return }
+        switch FormLoader.load() {
+        case .success(let payload):
+            loadState = .loaded(payload)
+        case .failure(let error):
+            loadState = .failed(error.errorDescription ?? "The form couldn't be loaded.")
+        }
     }
 }
 

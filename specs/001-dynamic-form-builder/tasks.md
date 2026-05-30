@@ -82,9 +82,12 @@ task before the previous task's G5 is green.
 
 ## Phase E — Views
 
-- [ ] **E1** `feat: themed form screen` — `FormScreen` paints `ResolvedTheme`, renders `form_title`,
-  scrollable `FieldRowView` list + Save; load-failure/empty states via `StateView`. Depends on A2, C1, D2.
-  **Tests**: manual G5 (state logic already covered by C/D).
+- [x] **E1** `feat: themed form screen` — `FormScreen` loads via `FormLoader` into a `ViewState`
+  (loading/error via `StateView`); `FormContentView` owns the `FormViewModel`, paints `ResolvedTheme`
+  (background/text/border/error), renders `form_title` + ordered `FieldRowView` list + Save + the
+  confirmation alert. `FieldRowView` routes on `kind` (themed placeholders now; real controls in E2–E4).
+  **Verified (G5):** built + **ran on iPhone 16 Pro simulator** — dark theme renders from JSON, 6
+  fields in order, `COLOR_PICKER` excluded (screenshot). 60 tests / 14 suites still green, no warnings.
 - [ ] **E2** `feat: text field component` — route 5 subtypes; `placeholder`/counter only if present;
   SECURE masks. Depends on E1, C2.
 - [ ] **E3** `feat: dropdown component` — `Menu` showing labels, stores id; `allow_multiple` rows;

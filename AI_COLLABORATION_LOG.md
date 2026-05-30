@@ -218,12 +218,12 @@ A few non-obvious things I can speak to directly:
 
 ## Status & next steps
 
-- **Done & verified**: A1–A2, B1–B3 (parsing core), C1–C2 (`FormViewModel`), and D1–D2 (validation
-  + submit) — all green through the 5-gate loop (**60 tests / 14 suites**). **The entire non-UI core
-  is built and tested** — model, parsing, loading, state, updates, validation, and a submit that
-  preserves scalars/arrays/bools — fully offline, no force-unwraps on JSON paths, every function
-  complexity-annotated.
-- **Next**: Phase E — the SwiftUI views (themed `FormScreen` + the four field components), where the
-  isolation split (pure `nonisolated` core vs `@MainActor` UI) finally renders on screen.
+- **Done & verified**: A1–A2, B1–B3, C1–C2, D1–D2 (the whole non-UI core), and **E1 — the themed
+  `FormScreen`, which now renders on a real simulator**: the bundled JSON drives the dark theme,
+  the title, and 6 ordered fields, with the unknown `COLOR_PICKER` correctly excluded. For E1 the
+  5-gate G5 was a literal **`xcodebuild build` + boot/install/launch + screenshot**, not just unit
+  tests — verifying the server-driven pipeline end-to-end on screen. 60 tests / 14 suites still green.
+- **Next**: E2–E4 — replace `FieldRowView`'s placeholders with the real components (text field with
+  5 subtypes + counter, dropdown single/multi, toggle, checkbox), then F (enhancements) and G (docs).
 - I will keep appending to this log as the build progresses, capturing prompts, accepted
   suggestions, push-backs, and any bugs the AI gets wrong.
