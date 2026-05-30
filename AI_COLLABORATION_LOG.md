@@ -218,10 +218,9 @@ A few non-obvious things I can speak to directly:
 
 ## Status & next steps
 
-- **Done & verified**: A1–A2, B1–B3 (parsing core), and C1 (the first `@MainActor` view model:
-  `FieldValue` + `FormViewModel` ordering and seeded defaults) — all green through the 5-gate loop
-  (**41 tests / 11 suites**).
-- **Next**: C2 (value-update intents + live max-length guard) → D1 (validation) → the rest of
-  `Plan.md §6`.
+- **Done & verified**: A1–A2, B1–B3 (parsing core), and C1–C2 (the `FormViewModel`: ordering,
+  seeded defaults, and the update intents with a live max-length guard) — all green through the
+  5-gate loop (**46 tests / 12 suites**). Phase C complete.
+- **Next**: D1 (validation engine) → D2 (submit) → Phase E (views) → the rest of `Plan.md §6`.
 - I will keep appending to this log as the build progresses, capturing prompts, accepted
   suggestions, push-backs, and any bugs the AI gets wrong.

@@ -59,10 +59,11 @@ task before the previous task's G5 is green.
   Removed the unused `LoadableViewModel` (YAGNI).
   **Tests**: `OrderingTests` (sort-not-index, stable tie-break); `ViewModelTests` (defaults seeded,
   absent → empty/false, selection filtered, text truncated). **✅ Done & verified** (41 tests / 11 suites green).
-- [ ] **C2** `feat: value updates + max length guard` — `updateText`/`toggle`/`select`
-  (single replace vs multi membership), O(1) dictionary writes, prefix truncation.
-  **Tests**: `ViewModelTests.test_maxLengthBlocksOverflow()`, `test_singleSelectReplaces()`,
-  `test_multiSelectTogglesMembership()`. Depends on C1.
+- [x] **C2** `feat: value updates + max length guard` — `updateText` (live prefix-truncate to
+  `max_length`), `toggle`, `select` (single replace vs multi membership toggle); O(1) field
+  metadata lookup via a `fieldsByID` map. **Tests**: `ViewModelUpdateTests` — max-length blocks
+  overflow, no-max stores full, toggle flips, single-select replaces, multi-select toggles.
+  **✅ Done & verified** (46 tests / 12 suites green). Phase C complete.
 
 ## Phase D — Validation
 

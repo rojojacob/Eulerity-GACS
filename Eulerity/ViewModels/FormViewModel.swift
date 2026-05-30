@@ -18,15 +18,58 @@ final class FormViewModel: ObservableObject {
     let theme: ThemeModel?
     let orderedFields: [FormField]
 
-    /// fieldId → current value. Mutation intents arrive in C2.
+    /// fieldId → current value. Mutated only through the intent methods below.
     @Published private(set) var values: [String: FieldValue]
+
+    /// fieldId → field, for O(1) metadata lookup (`max_length`, `allow_multiple`)
+    /// during updates — never a linear scan of `orderedFields` (Constitution IV).
+    private let fieldsByID: [String: FormField]
 
     init(payload: FormPayload) {
         formTitle = payload.formTitle
         theme = payload.theme
         let ordered = Self.sorted(payload.fields)
         orderedFields = ordered
+        fieldsByID = Dictionary(ordered.map { ($0.id, $0) }, uniquingKeysWith: { first, _ in first })
         values = Self.seedValues(for: ordered)
+    }
+
+    // MARK: - Update intents
+
+    /// Sets a text field's value, enforcing `max_length` live by truncating the
+    /// prefix (Plan.md C2 / §7 #13). Unknown ids are ignored.
+    /// - Complexity: O(L) in the new text length; the store is O(1).
+    func updateText(_ id: String, to newValue: String) {
+        guard let field = fieldsByID[id] else { return }
+        var text = newValue
+        if let maxLength = field.maxLength, text.count > maxLength {
+            text = String(text.prefix(maxLength))
+        }
+        values[id] = .text(text)
+    }
+
+    /// Flips a toggle/checkbox value. - Complexity: O(1).
+    func toggle(_ id: String) {
+        let current = values[id]?.bool ?? false
+        values[id] = .bool(!current)
+    }
+
+    /// Applies a dropdown selection: single-select replaces the value; multi-select
+    /// toggles the option's membership (Plan.md C2). Unknown ids are ignored.
+    /// - Complexity: O(s) in the current selection count (membership toggle).
+    func select(_ id: String, optionID: String) {
+        guard let field = fieldsByID[id] else { return }
+        if field.allowMultiple {
+            var current = values[id]?.selection ?? []
+            if let index = current.firstIndex(of: optionID) {
+                current.remove(at: index)
+            } else {
+                current.append(optionID)
+            }
+            values[id] = .selection(current)
+        } else {
+            values[id] = .selection([optionID])
+        }
     }
 
     // MARK: - Ordering
