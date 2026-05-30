@@ -22,10 +22,12 @@ task before the previous task's G5 is green.
 - [x] **A1** `chore: scaffold MVVM structure` — Xcode iOS 16 target, the §4 group layout,
   `Resources/form_payload.json` bundled, `EulerityTests` target + scheme.
   **Tests**: `BundleTests.payloadFileExistsInBundle()`. **✅ Done & verified** (build + test green).
-- [ ] **A2** `feat: hex color parsing + theme model` — `ThemeModel` (raw hex strings),
+- [x] **A2** `feat: hex color parsing + theme model` — `ThemeModel` (raw hex strings),
   `HexColorParser.rgba(from:)` for `#RGB`/`#RRGGBB`/`#RRGGBBAA` (± `#`), invalid → `nil` →
-  `ResolvedTheme.fallback`.
-  **Tests**: `HexColorParserTests` (valid 3/6/8-digit, missing `#`, empty, invalid `#GGGGGG` → nil, nil field → fallback).
+  `ResolvedTheme.fallback` (per-channel).
+  **Tests**: `HexColorParserTests` + `ResolvedThemeTests` (3/6/8-digit, missing `#`, empty/blank,
+  invalid `#GGGGGG` → nil, wrong length → nil, nil model → fallback, invalid channel → fallback,
+  valid channel → parsed). **✅ Done & verified** (13 tests / 4 suites green).
 
 ## Phase B — Polymorphic parsing (core)
 
