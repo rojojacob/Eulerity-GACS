@@ -14,10 +14,13 @@ struct TextFieldComponent: View {
     let subtype: TextSubtype
     @ObservedObject var viewModel: FormViewModel
     let theme: ResolvedTheme
+    @FocusState.Binding var focusedField: String?
 
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
-            input.themedField(theme)
+            input
+                .focused($focusedField, equals: field.id)
+                .themedField(theme)
             if let maxLength = field.maxLength {
                 CharacterCounterView(count: currentText.count, max: maxLength, theme: theme)
             }

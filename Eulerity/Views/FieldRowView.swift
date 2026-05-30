@@ -13,6 +13,7 @@ struct FieldRowView: View {
     let field: FormField
     @ObservedObject var viewModel: FormViewModel
     let theme: ResolvedTheme
+    @FocusState.Binding var focusedField: String?
 
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
@@ -43,7 +44,8 @@ struct FieldRowView: View {
     @ViewBuilder private var control: some View {
         switch field.kind {
         case .text(let subtype):
-            TextFieldComponent(field: field, subtype: subtype, viewModel: viewModel, theme: theme)
+            TextFieldComponent(field: field, subtype: subtype, viewModel: viewModel, theme: theme,
+                               focusedField: $focusedField)
         case .dropdown(let options, let allowMultiple):
             DropdownComponent(field: field, viewModel: viewModel, theme: theme,
                               options: options, allowMultiple: allowMultiple)

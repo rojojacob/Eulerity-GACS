@@ -113,8 +113,11 @@ task before the previous task's G5 is green.
   and passes it to `Validator` (which falls back to inline compile, so D1 tests stand). Invalid
   pattern ignored end-to-end (§7 #11). **Tests**: `ViewModelRegexTests` (3) — fail blocks submit,
   match submits, invalid pattern ignored. **✅ Done & verified** (67 tests / 16 suites green).
-- [ ] **F3** `feat: keyboard Next/Done toolbar` — `@FocusState` over ordered text-field ids; Next advances, Done dismisses.
-  **Tests**: `FocusTests.test_focusOrderMatchesVisualOrder()`. Depends on E2.
+- [x] **F3** `feat: keyboard Next/Done toolbar` — `FormViewModel.textFieldIDsInOrder` (text fields in
+  visual order); a `@FocusState` binding threaded `FormContentView → FieldRowView → TextFieldComponent`;
+  a keyboard `ToolbarItemGroup` with **Next** (advances, disabled on last) and **Done** (dismisses).
+  **Tests**: `FocusTests.focusOrderMatchesVisualOrder` (text-only, visual order). **✅ Done & verified**
+  (builds + 68 tests / 17 suites green).
 - [ ] **F4** `test: polymorphic parsing edge cases` — consolidate/extend decoding tests to cover the
   full §7 matrix (missing arrays, conflicts, unknown types). Depends on B2.
 

@@ -89,6 +89,17 @@ final class FormViewModel: ObservableObject {
         }
     }
 
+    // MARK: - Focus
+
+    /// The ids of the text fields in render order — the cycle the keyboard Next/Done
+    /// toolbar walks (Plan.md F3). - Complexity: O(n) over fields.
+    var textFieldIDsInOrder: [String] {
+        orderedFields.compactMap { field in
+            if case .text = field.kind { return field.id }
+            return nil
+        }
+    }
+
     // MARK: - Submit
 
     /// Validates the form; on success builds and prints the submit payload and sets
