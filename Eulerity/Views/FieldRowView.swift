@@ -34,8 +34,11 @@ struct FieldRowView: View {
         switch field.kind {
         case .text(let subtype):
             TextFieldComponent(field: field, subtype: subtype, viewModel: viewModel, theme: theme)
-        case .dropdown, .toggle, .checkbox, .unsupported:
-            placeholderControl // replaced in E3/E4
+        case .dropdown(let options, let allowMultiple):
+            DropdownComponent(field: field, viewModel: viewModel, theme: theme,
+                              options: options, allowMultiple: allowMultiple)
+        case .toggle, .checkbox, .unsupported:
+            placeholderControl // replaced in E4
         }
     }
 
