@@ -8,7 +8,7 @@ import SwiftUI
 /// The app's single screen. Loads the bundled payload through ``FormLoader`` and
 /// renders one of three states via ``StateView``: a brief loading indicator, the
 /// themed form (``FormContentView``) on success, or a friendly message on a load
-/// failure (Plan.md E1 / §7 #6, B3).
+/// failure (Plan.md E1, B3).
 struct FormScreen: View {
     @State private var loadState: ViewState<FormPayload> = .idle
 

@@ -7,8 +7,8 @@ import Foundation
 
 /// The flavor of a `TEXT` field.
 ///
-/// Unknown subtypes fall back to `.plain` — a deliberate product decision
-/// (Plan.md §7 #4): a `TEXT` field is always usable as a plain text box even if
+/// Unknown subtypes fall back to `.plain` — a deliberate product decision:
+/// a `TEXT` field is always usable as a plain text box even if
 /// the server sends a subtype we don't recognize. The `String` raw values match
 /// the brief's exact uppercase tokens.
 nonisolated enum TextSubtype: String, Sendable, Equatable, CaseIterable {

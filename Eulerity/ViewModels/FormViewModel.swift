@@ -32,7 +32,7 @@ final class FormViewModel: ObservableObject {
     private let fieldsByID: [String: FormField]
 
     /// fieldId → compiled regex, built once so validation never recompiles a pattern
-    /// on each Save (Plan.md F2). Invalid patterns are omitted (treated as no rule, §7 #11).
+    /// on each Save (Plan.md F2). Invalid patterns are omitted (treated as no rule).
     private let compiledRegexes: [String: NSRegularExpression]
 
     /// The result of a successful submit: the typed payload and its pretty JSON.
@@ -54,7 +54,7 @@ final class FormViewModel: ObservableObject {
     // MARK: - Update intents
 
     /// Sets a text field's value, enforcing `max_length` live by truncating the
-    /// prefix (Plan.md C2 / §7 #13). Unknown ids are ignored.
+    /// prefix (Plan.md C2). Unknown ids are ignored.
     /// - Complexity: O(L) in the new text length; the store is O(1).
     func updateText(_ id: String, to newValue: String) {
         guard let field = fieldsByID[id] else { return }
@@ -172,7 +172,7 @@ final class FormViewModel: ObservableObject {
 
     /// Sorts by the `order` integer with an explicit, stable tie-break on the
     /// decode index, so we never depend on `sorted(by:)` being stable and equal
-    /// orders keep their payload sequence (Plan.md §7 #7). Missing `order` already
+    /// orders keep their payload sequence. Missing `order` already
     /// decoded to `Int.max`, so those render last.
     ///
     /// - Complexity: O(n log n).
@@ -200,7 +200,7 @@ final class FormViewModel: ObservableObject {
         return values
     }
 
-    /// The seeded value for one field, honoring its default and the §7 decisions:
+    /// The seeded value for one field, honoring its default and these decisions:
     /// text default truncated to `max_length` (#1); dropdown defaults filtered to
     /// ids that actually exist in the options (#9).
     private static func initialValue(for field: FormField) -> FieldValue {

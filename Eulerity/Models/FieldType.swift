@@ -10,7 +10,7 @@ import Foundation
 /// Known values map to the brief's exact uppercase tokens. Anything unrecognized
 /// decodes to `.unsupported(rawValue:)` instead of throwing, so a server that
 /// introduces a new type never breaks the app — the field is simply excluded
-/// from render (Constitution V; Plan.md §7 #2). Matching is **exact /
+/// from render (Constitution V). Matching is **exact /
 /// case-sensitive** by design (Plan.md B1), so `"text"` is unsupported, not `TEXT`.
 nonisolated enum FieldType: Equatable, Sendable {
     case text

@@ -5,7 +5,7 @@
 
 import Foundation
 
-/// Validates field values on Save (Plan.md §7 #13). Pure and SwiftUI-free: it
+/// Validates field values on Save. Pure and SwiftUI-free: it
 /// takes the fields and their current values and returns `fieldId → error message`
 /// for every invalid field — an empty result means the form is valid.
 nonisolated enum Validator {
@@ -57,7 +57,7 @@ nonisolated enum Validator {
         case .dropdown:
             guard field.isRequired else { return nil }
             // A chosen option (or a locally-added billing card) satisfies it; an
-            // empty selection is still surfaced (§7 #3) so submit stays blocked.
+            // empty selection is still surfaced so submit stays blocked.
             let selection = value?.selection ?? []
             return selection.isEmpty ? requiredMessage(field) : nil
 
@@ -72,8 +72,7 @@ nonisolated enum Validator {
 
     /// Whether `text` satisfies `pattern`. Uses `precompiled` when available
     /// (compiled once at the view model — Plan.md F2), otherwise compiles inline.
-    /// An invalid pattern is treated as "no rule" (returns `true`), never a crash
-    /// (§7 #11).
+    /// An invalid pattern is treated as "no rule" (returns `true`), never a crash.
     /// - Complexity: O(L) to match; O(pattern) to compile when not precompiled.
     private static func matches(_ pattern: String, _ text: String, precompiled: NSRegularExpression?) -> Bool {
         let regex = precompiled ?? (try? NSRegularExpression(pattern: pattern))

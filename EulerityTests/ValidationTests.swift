@@ -39,7 +39,7 @@ struct ValidationTests {
         #expect(Validator.validate(fields: [f], values: ["code": .text("lower")])["code"] != nil)
     }
 
-    @Test("An invalid regex pattern in the JSON is ignored, never crashes (§7 #11)")
+    @Test("An invalid regex pattern in the JSON is ignored, never crashes")
     func invalidRegexIgnored() throws {
         let f = try field(#"{"id":"code","type":"TEXT","label":"C","regex":"[unclosed"}"#)
         #expect(Validator.validate(fields: [f], values: ["code": .text("anything")]).isEmpty)
@@ -61,7 +61,7 @@ struct ValidationTests {
         #expect(Validator.validate(fields: [f], values: ["net": .selection(["o1"])]).isEmpty)
     }
 
-    @Test("Required dropdown with empty options surfaces the conflict (§7 #3)")
+    @Test("Required dropdown with empty options surfaces the conflict")
     func emptyOptionsRequiredDropdown() throws {
         let f = try field(#"{"id":"bill","type":"DROPDOWN","label":"B","required":true,"options":[]}"#)
         #expect(Validator.validate(fields: [f], values: ["bill": .selection([])])["bill"] != nil)

@@ -35,7 +35,7 @@ struct BundledPayloadTests {
         ])
     }
 
-    @Test("The over-long campaign-name default is truncated to max_length on seed (§7 #1)")
+    @Test("The over-long campaign-name default is truncated to max_length on seed")
     func campaignNameTruncated() throws {
         let vm = try loadedViewModel()
         #expect(vm.values["campaign_name"] == .text("Summer Sale 2026 - E"))
@@ -59,7 +59,7 @@ struct BundledPayloadTests {
         #expect(vm.errors["daily_budget"] != nil)
         #expect(vm.errors["destination_url"] != nil)
         #expect(vm.errors["ad_networks"] != nil)
-        #expect(vm.errors["billing_account"] != nil)  // empty-options conflict (§7 #3)
+        #expect(vm.errors["billing_account"] != nil)  // empty-options conflict
         #expect(vm.errors["admin_password"] != nil)
         #expect(vm.errors["accept_legal"] != nil)
         // campaign_name is pre-filled (default truncated, non-empty) → valid.

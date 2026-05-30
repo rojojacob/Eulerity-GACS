@@ -41,7 +41,7 @@ struct ViewModelTests {
         #expect(vm.values["c"] == .bool(false))
     }
 
-    @Test("Default selection ids not present in options are dropped (§7 #9)")
+    @Test("Default selection ids not present in options are dropped")
     func defaultSelectionFilteredToValidOptions() throws {
         let vm = try viewModel(#"""
         {"fields":[
@@ -53,7 +53,7 @@ struct ViewModelTests {
         #expect(vm.values["net"] == .selection(["o1"]))
     }
 
-    @Test("Text default longer than max_length is truncated on seed (§7 #1)")
+    @Test("Text default longer than max_length is truncated on seed")
     func textDefaultTruncatedToMaxLength() throws {
         let vm = try viewModel(#"""
         {"fields":[
@@ -220,7 +220,7 @@ struct ViewModelRegexTests {
         #expect(vm.confirmation != nil)
     }
 
-    @Test("An invalid regex pattern is ignored end-to-end, never blocks submit (§7 #11)")
+    @Test("An invalid regex pattern is ignored end-to-end, never blocks submit")
     func invalidPatternIgnored() throws {
         let vm = try viewModel(#"{"fields":[{"id":"code","type":"TEXT","label":"C","regex":"[unclosed"}]}"#)
         vm.updateText("code", to: "anything")

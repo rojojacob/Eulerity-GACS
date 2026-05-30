@@ -8,7 +8,7 @@ import Foundation
 /// Decodes any `Decodable` element without throwing: a failure is captured as
 /// `nil` so an enclosing array keeps decoding the remaining elements. This is how
 /// a single malformed field is skipped without nuking the whole payload
-/// (Constitution V; Plan.md §7 #12).
+/// (Constitution V).
 private nonisolated struct Failable<Wrapped: Decodable>: Decodable {
     let value: Wrapped?
     nonisolated init(from decoder: any Decoder) throws {
@@ -20,7 +20,7 @@ private nonisolated struct Failable<Wrapped: Decodable>: Decodable {
 ///
 /// `fields` contains only the fields that **decoded successfully AND are a
 /// supported type** — malformed elements and unknown types are excluded from
-/// render (Plan.md §7 #2/#12) and counted in ``skippedFieldCount`` for
+/// render and counted in ``skippedFieldCount`` for
 /// diagnostics. A missing/empty `fields` array yields an empty form (#6).
 /// Ordering by `order` is applied later, in the view model (Plan.md C1).
 ///

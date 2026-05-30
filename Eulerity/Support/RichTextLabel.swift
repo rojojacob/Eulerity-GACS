@@ -8,7 +8,7 @@ import Foundation
 /// Builds an attributed checkbox label, turning each `metadata` key that appears
 /// as a substring of the label into a tappable link to its URL (Plan.md F1).
 ///
-/// Defensive (Constitution V / §7 #10): a key not found in the label is ignored,
+/// Defensive (Constitution V): a key not found in the label is ignored,
 /// and a malformed URL (or one without a scheme) is left as plain text. Foundation
 /// only — the link *color* is applied by the view via `.tint`, so this stays pure
 /// and unit-testable.
