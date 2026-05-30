@@ -44,9 +44,11 @@ task before the previous task's G5 is green.
   **Tests**: `DecodingTests` — 4 known types, unknown excluded, empty options, malformed-skipped,
   missing-fields → empty, bundled payload → 6 renderable / 1 skipped. **✅ Done & verified**
   (31 tests / 8 suites green; required flattening a compiler-crashing nested-optional expression).
-- [ ] **B3** `feat: bundle JSON loader` — `FormLoader.load(resource:) -> Result<FormPayload, FormLoadError>`;
-  missing/unreadable/corrupt → typed error, no crash.
-  **Tests**: `LoaderTests.test_missingResource_returnsFileNotFound()`, `test_corruptJSON_returnsDecodingError()`. Depends on B2.
+- [x] **B3** `feat: bundle JSON loader` — `FormLoader.load(resource:) -> Result<FormPayload, FormLoadError>`
+  (typed `FormLoadError`: fileNotFound / unreadable / decoding, `LocalizedError` messages);
+  decoding split into a testable `decode(_:)`. Missing/unreadable/corrupt → typed error, no crash.
+  **Tests**: `LoaderTests` — bundled load success, missing → `.fileNotFound`, corrupt → `.decoding`,
+  valid data → payload. **✅ Done & verified** (35 tests / 9 suites green).
 
 ## Phase C — State & ViewModel
 

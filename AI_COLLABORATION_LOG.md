@@ -219,7 +219,9 @@ A few non-obvious things I can speak to directly:
 ## Status & next steps
 
 - **Done & verified**: A1 (scaffold), A2 (theme/hex), B1 (type taxonomy), B2 (polymorphic
-  skip-unknown decoding) — all green through the 5-gate loop (**31 tests / 8 suites**).
-- **Next**: B3 (bundle loader with typed errors) → C1 (state + defaults) → the rest of `Plan.md §6`.
+  skip-unknown decoding), B3 (bundle loader with typed errors) — all green through the 5-gate loop
+  (**35 tests / 9 suites**). Phase B (parsing core) complete.
+- **Next**: C1 (field-value state + seeded defaults) → C2 (updates / max-length) → the rest of
+  `Plan.md §6`.
 - I will keep appending to this log as the build progresses, capturing prompts, accepted
   suggestions, push-backs, and any bugs the AI gets wrong.
