@@ -5,7 +5,7 @@ import SwiftUI
 struct EulerityApp: App {
     var body: some Scene {
         WindowGroup {
-            FormScreen()
+            SplashView()
         }
     }
 }
